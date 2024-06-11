@@ -9,6 +9,7 @@ DEPS := $(OBJS:.o=.d)
 
 CC = clang++
 CPPFLAGS = -Wall -Wextra -Werror -MMD -MP -gdwarf-2
+EMCC = emcc
 
 DIRDUP = mkdir -p $(@D)
 
@@ -17,6 +18,10 @@ all: $(NAME)
 $(NAME): $(OBJS) $(MAIN_OBJ)
 	@printf "\033[0;32mCompilation successful.\033[0m\n"
 	@$(CC) $(OBJS) $(MAIN_OBJ) -o $(NAME)
+
+wasm: $(OBJS) $(MAIN_OBJ)
+	@printf "\033[0;32mCompiling to WebAssembly...\033[0m\n"
+	@$(EMCC) $(OBJS) $(MAIN_OBJ) -O3 -s WASM=1 -o $(NAME).wasm
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
 	@$(DIRDUP)
@@ -38,4 +43,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re wasm

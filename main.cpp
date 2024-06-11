@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <set>
@@ -70,4 +71,8 @@ int main(int ac, char **av) {
         std::cerr << "\033[31m" << e.what() << "\033[30m" << std::endl;
     }
 
+    std::string path = "./index.html";
+    std::string command = "open " + path;
+
+    system(command.c_str());
 }
