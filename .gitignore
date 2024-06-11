@@ -1,2 +1,5 @@
 .o
 .d
+.vscode
+
+node_modules/
