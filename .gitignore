@@ -2,4 +2,5 @@
 .d
 .vscode
 
+emsdk/
 node_modules/
