@@ -60,6 +60,10 @@ std::vector<std::string>    check_args_validity(int ac, char **av) {
     return args;
 }
 
+void    test() {
+    printf("Test");
+}
+
 int main(int ac, char **av) {
 
     std::vector<std::string> args;

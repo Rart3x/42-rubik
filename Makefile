@@ -13,15 +13,17 @@ EMCC = emcc
 
 DIRDUP = mkdir -p $(@D)
 
-all: $(NAME)
+MAIN_SRC = main.cpp
+
+all: $(NAME) wasm
 
 $(NAME): $(OBJS) $(MAIN_OBJ)
 	@printf "\033[0;32mCompilation successful.\033[0m\n"
 	@$(CC) $(OBJS) $(MAIN_OBJ) -o $(NAME)
 
-wasm: $(OBJS) $(MAIN_OBJ)
-	@printf "\033[0;32mCompiling to WebAssembly...\033[0m\n"
-	@$(EMCC) $(OBJS) $(MAIN_OBJ) -O3 -s WASM=1 -o $(NAME).wasm
+wasm: $(MAIN_SRC)
+	@printf "\033[0;32mCompiling to WebAssembly.\033[0m\n"
+	@$(EMCC) $(MAIN_SRC) -O2 -o $(NAME).html
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
 	@$(DIRDUP)
@@ -38,9 +40,9 @@ clean:
 	@printf "\033[0;32mCleanup successful.\033[0m\n"
 
 fclean: clean
-	@rm -f $(NAME)
+	@rm -f $(NAME) $(NAME).wasm $(NAME).html $(NAME).js 
 	@printf "\033[0;32mFull cleanup successful.\033[0m\n"
 
-re: fclean all
+re: fclean all wasm
 
 .PHONY: all clean fclean re wasm
