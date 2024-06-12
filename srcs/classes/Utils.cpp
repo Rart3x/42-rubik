@@ -1,13 +1,6 @@
-#include <cstdlib>
-#include <cstring>
-#include <iostream>
-#include <set>
-#include <stdexcept>
-#include <sstream>
-#include <string>
-#include <vector>
+#include "../includes/Utils.hpp"
 
-bool    is_in_set(char *arg) {
+bool     is_in_set(char *arg) {
 
     std::set<char> set = {'F', 'R', 'U', 'B', 'L', 'D', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '\'', ' '};
 
@@ -18,7 +11,7 @@ bool    is_in_set(char *arg) {
     return true;
 }
 
-bool    check_splitted_args(std::vector<std::string> args) {
+bool     check_splitted_args(std::vector<std::string> args) {
 
     std::vector<std::string>::iterator it;
 
@@ -58,25 +51,4 @@ std::vector<std::string>    check_args_validity(int ac, char **av) {
         throw std::invalid_argument("Invalid pattern in argument");
 
     return args;
-}
-
-void    test() {
-    printf("Test");
-}
-
-int main(int ac, char **av) {
-
-    std::vector<std::string> args;
-
-    try {
-        args = check_args_validity(ac, av);
-    }
-    catch (const std::exception& e) {
-        std::cerr << "\033[31m" << e.what() << "\033[30m" << std::endl;
-    }
-
-    std::string path = "./index.html";
-    std::string command = "open " + path;
-
-    system(command.c_str());
 }
