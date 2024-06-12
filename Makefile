@@ -9,7 +9,7 @@ DEPS := $(OBJS:.o=.d)
 
 CC = clang++
 CPPFLAGS = -Wall -Wextra -Werror -MMD -MP -gdwarf-2
-EMCC = emcc
+EMCC = em++
 
 DIRDUP = mkdir -p $(@D)
 
@@ -23,7 +23,7 @@ $(NAME): $(OBJS) $(MAIN_OBJ)
 
 wasm: $(MAIN_SRC)
 	@printf "\033[0;32mCompiling to WebAssembly.\033[0m\n"
-	@$(EMCC) $(MAIN_SRC) -O2 -o $(NAME).html
+	@$(EMCC) $(MAIN_SRC) -O2 -o $(NAME).html --emrun --bind
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
 	@$(DIRDUP)
