@@ -94,11 +94,7 @@ def handle_keys_input(event, font, rects, screen) -> None:
     '''Handle keys input method'''
 
     if event.key == pygame.K_f:
-        button = pygame.Surface((35, 35))
-        text = font.render("F", True, (255, 0, 0))
-        rects["F"] = text.get_rect(center=(button.get_width() / 2, button.get_height() / 2))
-        button.blit(text, rects["F"])
-        screen.blit(button, (rects["F"].x, rects["F"].y))
+        print("F KEY")
     elif event.key == pygame.K_r:
         print("R KEY")
     elif event.key == pygame.K_u:
