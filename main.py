@@ -3,7 +3,6 @@
 import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
-import pygame
 import sys
 
 from Rubik import *
@@ -16,6 +15,7 @@ def main() -> int:
 
     try:
         rubik.set_args(check_args_validity(len(sys.argv), sys.argv))
+        display()
     except ValueError as e:
         print("\033[31m", e, "\033[30m")
 

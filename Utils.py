@@ -1,7 +1,9 @@
+import pygame
+
 def is_in_set(arg):
     '''IsInSet function'''
 
-    set_chars = {'F', 'R', 'U', 'B', 'L', 'D', '2', "'", ' '}
+    set_chars = {'F', 'R', 'U', 'B', 'L', 'D', '2', "'", ' '} | {'f', 'r', 'u', 'b', 'l', 'd'}
     for char in arg:
         if char not in set_chars:
             return False
@@ -20,8 +22,8 @@ def is_spaced(args):
 def check_splitted_args(args):
     '''CheckSplitted function'''
 
-    letters = {'F', 'R', 'U', 'B', 'L', 'D'}
-    numbers = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
+    letters = {'F', 'R', 'U', 'B', 'L', 'D'} | {'f', 'r', 'u', 'b', 'l', 'd'}
+    numbers = {'2'}
 
     for arg in args:
         prev_char = None
@@ -54,3 +56,22 @@ def check_args_validity(ac, av):
         raise ValueError("Error: Invalid spacing in arguments")
 
     return args
+
+def display():
+    '''Diplay function for Pygame Rubik's Cube'''
+
+    running = True
+
+    background_colour = (255, 255, 255)
+    (width, height) = (1200, 800)
+
+    screen = pygame.display.set_mode((width, height))
+    screen.fill(background_colour)
+    pygame.display.set_caption('Rubik')
+
+    pygame.display.flip()
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
