@@ -22,6 +22,7 @@ def main() -> int:
 
     os.remove("./models_compressed/cube.bam")
     os.rmdir("./models_compressed")
-    
+
+
 if __name__ == "__main__":
     main()
