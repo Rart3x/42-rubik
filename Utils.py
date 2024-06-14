@@ -3,8 +3,10 @@ import random
 def check_args_validity(ac, av):
     '''CheckArgs validity'''
 
-    if ac!= 2:
+    if ac > 2:
         raise ValueError("Error: Invalid number of arguments")
+    if ac < 2:
+        return
     
     if not is_in_set(av[1]):
         raise ValueError("Error: Invalid caracter in arguments")

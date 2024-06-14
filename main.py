@@ -12,8 +12,9 @@ from Utils   import *
 def main() -> int:
     '''Main function'''
 
-    os.remove("./models_compressed/cube.bam")
-    os.rmdir("./models_compressed")
+    if os.path.exists("./models_compressed/"):
+        os.remove("./models_compressed/cube.bam")
+        os.rmdir("./models_compressed")
 
     rubik = Rubik()
 
@@ -22,9 +23,6 @@ def main() -> int:
         display(rubik.get_args())
     except ValueError as e:
         print("\033[31m", e, "\033[30m")
-
-    os.remove("./models_compressed/cube.bam")
-    os.rmdir("./models_compressed")
 
 
 if __name__ == "__main__":
