@@ -12,6 +12,9 @@ from Utils   import *
 def main() -> int:
     '''Main function'''
 
+    os.remove("./models_compressed/cube.bam")
+    os.rmdir("./models_compressed")
+
     rubik = Rubik()
 
     try:

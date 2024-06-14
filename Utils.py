@@ -1,3 +1,5 @@
+import random
+
 def check_args_validity(ac, av):
     '''CheckArgs validity'''
 
@@ -35,6 +37,16 @@ def check_splitted_args(args):
             prev_char = char
 
     return True
+
+
+def generate_input(i):
+    '''Generate i input to apply to the Rubik's Cube'''
+
+    inputs_chars = {"F", "R", "U", "B", "L", "D"} | {"F2", "R2", "U2", "B2", "L2", "D2"} | {"F'", "R'", "U'", "B'", "L'", "D'"}
+
+    random_chars = random.sample(inputs_chars, i)
+
+    return random_chars
 
 
 def is_in_set(arg):

@@ -22,10 +22,14 @@ def apply_movement(axis, layer):
 def display(args):
     '''Display 3D Rubik's Cube, manipulating Blender Object'''
 
+    global args_g
+
+    args_g = args
+
     for position in product((-1, 0, 1), repeat=3):
         cubes.append(Entity(model='textures/cube.obj', texture='textures/cube.png', position=position, scale=0.5))
 
-    # pre_input(args)
+    # automatic_input(args)
     app.run()
 
 
@@ -34,9 +38,10 @@ import time
 def input(key):
     '''Input keys method'''
     
+    if held_keys['space']:
+        automatic_input(args_g)
+
     if held_keys['escape']:
-        os.remove("./models_compressed/cube.bam")
-        os.rmdir("./models_compressed")
         exit()
 
     if key not in rot_dict: 
@@ -50,8 +55,7 @@ def input(key):
     eval(f'center.animate_rotation_{axis}({-angle if shift else angle}, duration = {duration})')
 
 
-
-def pre_input(args):
+def automatic_input(args):
     '''Pre Input keys method'''
 
     for i in args:
