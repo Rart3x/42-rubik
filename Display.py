@@ -1,6 +1,8 @@
 from ursina import *
 from itertools import product
 
+from Utils import generate_input
+
 import time
 import tkinter
 
@@ -40,6 +42,9 @@ def input(key):
     
     if held_keys['space']:
         automatic_input(args_g)
+    
+    if held_keys['1']:
+        automatic_input(generate_input(10))
 
     if held_keys['escape']:
         exit()
