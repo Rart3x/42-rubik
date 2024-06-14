@@ -16,7 +16,7 @@ def main() -> int:
 
     try:
         rubik.set_args(check_args_validity(len(sys.argv), sys.argv))
-        display()
+        display(rubik.get_args())
     except ValueError as e:
         print("\033[31m", e, "\033[30m")
 
