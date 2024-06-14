@@ -90,6 +90,10 @@ window.borderless = True
 window.size = (w / 2, h / 2)
 window.position = (w / 4, h / 4)
 
+# b = Button(model='quad', scale=0.15, y=-.4, x=0, color=color.black, text='Scramble', text_size=.5, text_color=color.white)
+# b.text_size = 1
+# b.on_click = Sequence(Wait(.5), Func(automatic_input, generate_input(5)), )
+
 EditorCamera()
 
 rot_dict = {'u': ['y', 1, 90],    'e': ['y', 0, -90],    'd': ['y', -1, -90],
