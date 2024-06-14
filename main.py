@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 import os
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-
 import sys
 
 from Display import *
-from Rubik   import *
-from Utils   import *
+from Utils import *
+
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+
 
 def main() -> int:
     '''Main function'''
@@ -16,11 +16,8 @@ def main() -> int:
         os.remove("./models_compressed/cube.bam")
         os.rmdir("./models_compressed")
 
-    rubik = Rubik()
-
     try:
-        rubik.set_args(check_args_validity(len(sys.argv), sys.argv))
-        display(rubik.get_args())
+        display(check_args_validity(len(sys.argv), sys.argv))
     except ValueError as e:
         print("\033[31m", e, "\033[30m")
 

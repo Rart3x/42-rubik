@@ -1,21 +1,24 @@
-from ursina import *
-from itertools import product
-
-from Utils import generate_input
-
 import time
 import tkinter
+
+from itertools import product
+from ursina import *
+
+from Utils import generate_input
 
 
 def apply_movement(axis, layer):
     '''Apply movement function'''
 
     for cube in cubes:
-        cube.position, cube.rotation = round(cube.world_position, 1), cube.world_rotation
+        cube.position, cube.rotation = (
+            round(cube.world_position, 1),
+            round(cube.world_rotation, 1)
+        )
         cube.parent = scene
-    
+
     center.rotation = 0
-    
+
     for cube in cubes:
         if getattr(cube.position, axis) == layer:
             cube.parent = center
@@ -29,31 +32,33 @@ def display(args):
     args_g = args
 
     for position in product((-1, 0, 1), repeat=3):
-        cubes.append(Entity(model='textures/cube.obj', texture='textures/cube.png', position=position, scale=0.5))
+        cubes.append(
+            Entity(
+                model='textures/cube.obj',
+                texture='textures/cube.png',
+                position=position,
+                scale=0.5
+            )
+        )
 
-    # automatic_input(args)
     app.run()
 
 
-import time
-
 def input(key):
     '''Input keys method'''
-    
+
     if held_keys['space']:
         automatic_input(args_g)
-    
-    if held_keys['1']:
+    elif held_keys['1']:
         automatic_input(generate_input(10))
-
-    if held_keys['escape']:
+    elif held_keys['escape']:
         exit()
 
-    if key not in rot_dict: 
+    if key not in rot_dict:
         return
 
     axis, layer, angle = rot_dict[key]
-    
+
     apply_movement(axis, layer)
 
     shift = held_keys['shift']
@@ -90,9 +95,9 @@ window.borderless = True
 window.size = (w / 2, h / 2)
 window.position = (w / 4, h / 4)
 
-# b = Button(model='quad', scale=0.15, y=-.4, x=0, color=color.black, text='Scramble', text_size=.5, text_color=color.white)
-# b.text_size = 1
-# b.on_click = Sequence(Wait(.5), Func(automatic_input, generate_input(5)), )
+b = Button(model='quad', scale=0.15, y=-.4, x=0, color=color.black, text='Scramble', text_size=.5, text_color=color.white)
+b.text_size = 1
+b.on_click = Sequence(Wait(.5), Func(automatic_input, generate_input(5)), )
 
 EditorCamera()
 
