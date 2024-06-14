@@ -1,10 +1,13 @@
 from ursina import *
 from itertools import product
+
+import time
 import tkinter
 
 
-def parent_child_relationship(axis, layer):
-    
+def apply_movement(axis, layer):
+    '''Apply movement function'''
+
     for cube in cubes:
         cube.position, cube.rotation = round(cube.world_position, 1), cube.world_rotation
         cube.parent = scene
@@ -18,15 +21,20 @@ def parent_child_relationship(axis, layer):
 
 def input(key):
     '''Input keys method'''
+    
+    if held_keys['escape']:
+        os.remove("./models_compressed/cube.bam")
+        os.rmdir("./models_compressed")
+        exit()
 
     if key not in rot_dict: return
 
     axis, layer, angle = rot_dict[key]
+    
+    apply_movement(axis, layer)
 
-    parent_child_relationship(axis, layer)
     shift = held_keys['shift']
-    eval(f'center.animate_rotation_{axis}({-angle if shift else angle}, duration = 0.3)')
-    print("Turned")
+    eval(f'center.animate_rotation_{axis}({-angle if shift else angle}, duration = {duration})')
 
 
 def display(args):
@@ -43,10 +51,11 @@ center = Entity()
 root = tkinter.Tk()
 
 w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+duration = 0.3
 
 cubes = []
 
-window.borderless = False
+window.borderless = True
 window.size = (w / 2, h / 2)
 window.position = (w / 4, h / 4)
 EditorCamera()
