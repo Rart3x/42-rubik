@@ -6,6 +6,8 @@ from ursina import *
 
 from Utils import generate_input
 
+in_animation = False
+
 
 def apply_movement(axis, layer):
     '''Apply movement function'''
@@ -22,6 +24,28 @@ def apply_movement(axis, layer):
     for cube in cubes:
         if getattr(cube.position, axis) == layer:
             cube.parent = center
+
+
+def automatic_input(args):
+    '''Pre Input keys method'''
+
+    if args == None:
+        return
+
+    for i in args:
+        if len(i) > 1 and i[1].isdigit():
+            for j in range(2):
+                axis, layer, angle = rot_dict[(i[0].lower())]
+                apply_movement(axis, layer)
+                shift = held_keys['shift']
+                animate_rotation(center, axis, -angle if shift else angle, duration)
+                invoke(end_animation, delay=duration)
+        else:
+            axis, layer, angle = rot_dict[i[0].lower()]
+            apply_movement(axis, layer)
+            shift = held_keys['shift']
+            animate_rotation(center, axis, -angle if shift else angle, duration)
+            invoke(end_animation, delay=duration)
 
 
 def display(args):
@@ -47,6 +71,8 @@ def display(args):
 def input(key):
     '''Input keys method'''
 
+    global in_animation
+
     if held_keys['space']:
         automatic_input(args_g)
     elif held_keys['1']:
@@ -54,32 +80,29 @@ def input(key):
     elif held_keys['escape']:
         exit()
 
-    if key not in rot_dict:
+    if key not in rot_dict or in_animation:
         return
 
     axis, layer, angle = rot_dict[key]
-
+    in_animation = True
     apply_movement(axis, layer)
-
     shift = held_keys['shift']
-    eval(f'center.animate_rotation_{axis}({-angle if shift else angle}, duration = {duration})')
+    animate_rotation(center, axis, -angle if shift else angle, duration)
+    invoke(end_animation, delay=duration)
 
 
-def automatic_input(args):
-    '''Pre Input keys method'''
+def animate_rotation(entity, axis, angle, duration):
+    if axis == 'x':
+        entity.animate('rotation_x', angle, duration=duration)
+    elif axis == 'y':
+        entity.animate('rotation_y', angle, duration=duration)
+    elif axis == 'z':
+        entity.animate('rotation_z', angle, duration=duration)
 
-    for i in args:
-        if len(i) > 1 and i[1].isdigit():
-            for j in range(2):
-                axis, layer, angle = rot_dict[(i[0].lower())]
-                apply_movement(axis, layer)
-                shift = held_keys['shift']
-                eval(f'center.animate_rotation_{axis}({-angle if shift else angle}, duration = {duration})')
-        else:
-            axis, layer, angle = rot_dict[i[0].lower()]
-            apply_movement(axis, layer)
-            shift = held_keys['shift']
-            eval(f'center.animate_rotation_{axis}({-angle if shift else angle}, duration = {duration})')
+
+def end_animation():
+    global in_animation
+    in_animation = False
 
 
 app = Ursina()
@@ -87,7 +110,7 @@ center = Entity()
 root = tkinter.Tk()
 
 w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-duration = 0.08
+duration = 0.5
 
 cubes = []
 

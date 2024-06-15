@@ -95,7 +95,7 @@ class Rubik:
         self.solve_phase4()
 
 
-cube = Rubik()
-cube.print_rubik()
-cube.move_U()
-cube.print_rubik()
+# cube = Rubik()
+# cube.print_rubik()
+# cube.move_U()
+# cube.print_rubik()
