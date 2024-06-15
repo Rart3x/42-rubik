@@ -44,6 +44,12 @@ def automatic_input(args):
                 shift = held_keys['shift']
                 animate_rotation(center, axis, -angle if shift else angle, duration)
                 invoke(lambda: process_next_input(index), delay=duration + duration / 2)
+        elif len(i) > 1 and not i[1].isdigit():
+            axis, layer, angle = rot_dict[i[0].lower() + i[1]]
+            apply_movement(axis, layer)
+            shift = held_keys['shift']
+            animate_rotation(center, axis, -angle if shift else angle, duration)
+            invoke(lambda: process_next_input(index), delay=duration + duration / 2)
         else:
             axis, layer, angle = rot_dict[i[0].lower()]
             apply_movement(axis, layer)
@@ -133,6 +139,12 @@ window.position = (w / 4, h / 4)
 
 EditorCamera()
 
-rot_dict = {'u': ['y', 1, 90],    'e': ['y', 0, -90],    'd': ['y', -1, -90],
-            'l': ['x', -1, -90],  'm': ['x', 0, -90],    'r': ['x', 1, 90],
-            'f': ['z', -1, 90],   's': ['z', 0, 90],     'b': ['z', 1, -90]}
+rot_dict = { 'f': ['z', -1, 90],  'r': ['x', 1, 90],     'u': ['y', 1, 90],
+             'b': ['z', 1, -90],  'l': ['x', -1, -90],   'd': ['y', -1, -90],
+               
+            'f\'': ['z', -1, -90],'r\'': ['x', 1, -90],  'u\'': ['y', 1, -90],
+            'b\'': ['z', 1, 90],  'l\'': ['x', -1, 90],  'd\'': ['y', -1, 90],
+            
+            'e': ['y', 0, -90],   'm': ['x', 0, -90],    's': ['z', 0, 90],
+            'e\'': ['y', 0, 90],  'm\'': ['x', 0, 90],   's\'': ['z', 0, -90]
+            }
