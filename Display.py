@@ -17,7 +17,7 @@ w, h = root.winfo_screenwidth(), root.winfo_screenheight()
 
 window.borderless = True
 window.size = (w / 2, h / 2)
-window.position = (w / 4, h / 4)
+window.position = (w  / 2, h  / 2)
 
 EditorCamera()
 
@@ -29,7 +29,7 @@ rot_dict = { 'f': ['z', -1, 90],  'r': ['x', 1, 90],     'u': ['y', 1, 90],
             
             'e': ['y', 0, -90],   'm': ['x', 0, -90],    's': ['z', 0, 90],
             'e\'': ['y', 0, 90],  'm\'': ['x', 0, 90],   's\'': ['z', 0, -90]
-            }
+}
 
 
 def apply_movement(axis, layer):
@@ -56,32 +56,56 @@ def automatic_input(args):
         return
 
     def process_input(index):
+        
+        global in_animation
+
         if index >= len(args):
             return
 
         i = args[index]
         
-        if len(i) > 1 and i[1].isdigit():
+        if len(i) > 1 and i[1].isdigit() and not in_animation:
             for _ in range(2):
+               
+                in_animation = True
+
                 axis, layer, angle = rot_dict[i[0].lower()]
                 apply_movement(axis, layer)
+                
                 shift = held_keys['shift']
                 animate_rotation(center, axis, -angle if shift else angle, duration)
+                
                 invoke(lambda: process_next_input(index), delay=duration + duration / 2)
-        elif len(i) > 1 and not i[1].isdigit():
+
+        elif len(i) > 1 and not i[1].isdigit() and not in_animation:
+            
+            in_animation = True
+
             axis, layer, angle = rot_dict[i[0].lower() + i[1]]
             apply_movement(axis, layer)
+            
             shift = held_keys['shift']
             animate_rotation(center, axis, -angle if shift else angle, duration)
+            
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
-        else:
+        
+        elif not in_animation:
+            
+            in_animation = True
+            
             axis, layer, angle = rot_dict[i[0].lower()]
             apply_movement(axis, layer)
+            
             shift = held_keys['shift']
             animate_rotation(center, axis, -angle if shift else angle, duration)
+            
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
 
     def process_next_input(prev_index):
+        
+        global in_animation
+        in_animation = False
+        
         process_input(prev_index + 1)
 
     process_input(0)
@@ -112,6 +136,9 @@ def input(key):
 
     global in_animation
 
+    if in_animation:
+        return
+
     if held_keys['1']:
         automatic_input(args_g)
     elif held_keys['space']:
@@ -119,18 +146,22 @@ def input(key):
     elif held_keys['escape']:
         exit()
 
-    if key not in rot_dict or in_animation:
+    if key not in rot_dict:
         return
 
-    axis, layer, angle = rot_dict[key]
     in_animation = True
+    
+    axis, layer, angle = rot_dict[key]
     apply_movement(axis, layer)
+    
     shift = held_keys['shift']
     animate_rotation(center, axis, -angle if shift else angle, duration)
+    
     invoke(end_animation, delay=duration + duration / 2)
 
 
 def animate_rotation(entity, axis, angle, duration):
+    
     if axis == 'x':
         entity.animate('rotation_x', angle, duration=duration)
     elif axis == 'y':
@@ -140,5 +171,6 @@ def animate_rotation(entity, axis, angle, duration):
 
 
 def end_animation():
+    
     global in_animation
     in_animation = False
