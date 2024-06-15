@@ -1,4 +1,3 @@
-import time
 import tkinter
 
 from itertools import product
@@ -6,7 +5,31 @@ from ursina import *
 
 from Utils import generate_input
 
+
+app = Ursina()
+center = Entity()
+root = tkinter.Tk()
+
+cubes = []
+duration = 0.5
 in_animation = False
+w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+
+window.borderless = True
+window.size = (w / 2, h / 2)
+window.position = (w / 4, h / 4)
+
+EditorCamera()
+
+rot_dict = { 'f': ['z', -1, 90],  'r': ['x', 1, 90],     'u': ['y', 1, 90],
+             'b': ['z', 1, -90],  'l': ['x', -1, -90],   'd': ['y', -1, -90],
+               
+            'f\'': ['z', -1, -90],'r\'': ['x', 1, -90],  'u\'': ['y', 1, -90],
+            'b\'': ['z', 1, 90],  'l\'': ['x', -1, 90],  'd\'': ['y', -1, 90],
+            
+            'e': ['y', 0, -90],   'm': ['x', 0, -90],    's': ['z', 0, 90],
+            'e\'': ['y', 0, 90],  'm\'': ['x', 0, 90],   's\'': ['z', 0, -90]
+            }
 
 
 def apply_movement(axis, layer):
@@ -37,6 +60,7 @@ def automatic_input(args):
             return
 
         i = args[index]
+        
         if len(i) > 1 and i[1].isdigit():
             for _ in range(2):
                 axis, layer, angle = rot_dict[i[0].lower()]
@@ -88,9 +112,9 @@ def input(key):
 
     global in_animation
 
-    if held_keys['space']:
+    if held_keys['1']:
         automatic_input(args_g)
-    elif held_keys['1']:
+    elif held_keys['space']:
         automatic_input(generate_input(10))
     elif held_keys['escape']:
         exit()
@@ -103,7 +127,7 @@ def input(key):
     apply_movement(axis, layer)
     shift = held_keys['shift']
     animate_rotation(center, axis, -angle if shift else angle, duration)
-    invoke(end_animation, delay=duration)
+    invoke(end_animation, delay=duration + duration / 2)
 
 
 def animate_rotation(entity, axis, angle, duration):
@@ -118,33 +142,3 @@ def animate_rotation(entity, axis, angle, duration):
 def end_animation():
     global in_animation
     in_animation = False
-
-
-app = Ursina()
-center = Entity()
-root = tkinter.Tk()
-
-w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-duration = 0.5
-
-cubes = []
-
-window.borderless = True
-window.size = (w / 2, h / 2)
-window.position = (w / 4, h / 4)
-
-# b = Button(model='quad', scale=0.15, y=-.4, x=0, color=color.black, text='Scramble', text_size=.5, text_color=color.white)
-# b.text_size = 1
-# b.on_click = Sequence(Wait(.5), Func(automatic_input, generate_input(5)), )
-
-EditorCamera()
-
-rot_dict = { 'f': ['z', -1, 90],  'r': ['x', 1, 90],     'u': ['y', 1, 90],
-             'b': ['z', 1, -90],  'l': ['x', -1, -90],   'd': ['y', -1, -90],
-               
-            'f\'': ['z', -1, -90],'r\'': ['x', 1, -90],  'u\'': ['y', 1, -90],
-            'b\'': ['z', 1, 90],  'l\'': ['x', -1, 90],  'd\'': ['y', -1, 90],
-            
-            'e': ['y', 0, -90],   'm': ['x', 0, -90],    's': ['z', 0, 90],
-            'e\'': ['y', 0, 90],  'm\'': ['x', 0, 90],   's\'': ['z', 0, -90]
-            }
