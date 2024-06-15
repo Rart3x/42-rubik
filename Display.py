@@ -29,23 +29,32 @@ def apply_movement(axis, layer):
 def automatic_input(args):
     '''Pre Input keys method'''
 
-    if args == None:
+    if args is None:
         return
 
-    for i in args:
+    def process_input(index):
+        if index >= len(args):
+            return
+
+        i = args[index]
         if len(i) > 1 and i[1].isdigit():
-            for j in range(2):
-                axis, layer, angle = rot_dict[(i[0].lower())]
+            for _ in range(2):
+                axis, layer, angle = rot_dict[i[0].lower()]
                 apply_movement(axis, layer)
                 shift = held_keys['shift']
                 animate_rotation(center, axis, -angle if shift else angle, duration)
-                invoke(end_animation, delay=duration)
+                invoke(lambda: process_next_input(index), delay=duration + duration / 2)
         else:
             axis, layer, angle = rot_dict[i[0].lower()]
             apply_movement(axis, layer)
             shift = held_keys['shift']
             animate_rotation(center, axis, -angle if shift else angle, duration)
-            invoke(end_animation, delay=duration)
+            invoke(lambda: process_next_input(index), delay=duration + duration / 2)
+
+    def process_next_input(prev_index):
+        process_input(prev_index + 1)
+
+    process_input(0)
 
 
 def display(args):
@@ -118,9 +127,9 @@ window.borderless = True
 window.size = (w / 2, h / 2)
 window.position = (w / 4, h / 4)
 
-b = Button(model='quad', scale=0.15, y=-.4, x=0, color=color.black, text='Scramble', text_size=.5, text_color=color.white)
-b.text_size = 1
-b.on_click = Sequence(Wait(.5), Func(automatic_input, generate_input(5)), )
+# b = Button(model='quad', scale=0.15, y=-.4, x=0, color=color.black, text='Scramble', text_size=.5, text_color=color.white)
+# b.text_size = 1
+# b.on_click = Sequence(Wait(.5), Func(automatic_input, generate_input(5)), )
 
 EditorCamera()
 
