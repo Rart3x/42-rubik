@@ -54,11 +54,11 @@ def generate_input(i):
     '''Generate i input to apply to the Rubik's Cube'''
 
     inputs_chars = {
-        "F", "R", "U", "B", "L", "D"
+        "F", "R", "U", "B", "L", "D", "E", "M", "S"
     } | {
         "F2", "R2", "U2", "B2", "L2", "D2"
     } | {
-        "F'", "R'", "U'", "B'", "L'", "D'"
+        "F'", "R'", "U'", "B'", "L'", "D'", "E'", "M'", "S'"
     }
 
     random_chars = random.sample(inputs_chars, i)
