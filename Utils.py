@@ -1,10 +1,9 @@
 import random
 
 
-def check_args_validity(ac, extra, flag):
+def check_args_validity(ac, extra):
     '''CheckArgs validity'''
     
-    print
     if ac > 4:
         raise ValueError("Error: Invalid number of arguments")
     if ac < 4:

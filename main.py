@@ -19,10 +19,7 @@ def main(flag, extra) -> int:
         os.remove("./models_compressed/cube.bam")
         os.rmdir("./models_compressed")
     try:
-        if flag == 3:
-            rubik.set_args(check_args_validity(len(sys.argv), extra, flag))
-        else:
-            rubik.set_args(check_args_validity(len(sys.argv), extra, flag))
+        rubik.set_args(check_args_validity(len(sys.argv), extra))
             
         if flag == 2:
             pass
