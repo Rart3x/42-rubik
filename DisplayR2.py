@@ -11,7 +11,7 @@ center = Entity()
 root = tkinter.Tk()
 
 cubes = []
-duration = 0.5
+duration = 0.1
 in_animation = False
 w, h = root.winfo_screenwidth(), root.winfo_screenheight()
 
@@ -20,14 +20,13 @@ window.position = (w  / 4, h  / 4)
 
 EditorCamera()
 
-rot_dict = { 'f': ['z', -1, 90],  'r': ['x', 1, 90],     'u': ['y', 1, 90],
-             'b': ['z', 1, -90],  'l': ['x', -1, -90],   'd': ['y', -1, -90],
-               
-            'f\'': ['z', -1, -90],'r\'': ['x', 1, -90],  'u\'': ['y', 1, -90],
-            'b\'': ['z', 1, 90],  'l\'': ['x', -1, 90],  'd\'': ['y', -1, 90],
-            
-            'e': ['y', 0, -90],   'm': ['x', 0, -90],    's': ['z', 0, 90],
-            'e\'': ['y', 0, 90],  'm\'': ['x', 0, 90],   's\'': ['z', 0, -90]
+rot_dict = {
+    'f': ['z', -1, 90],  'f\'': ['z', -1, -90],
+    'r': ['x', 1, 90],    'r\'': ['x', 1, -90],
+    'u': ['y', 1, 90],    'u\'': ['y', 1, -90],
+    'b': ['z', 1, -90],   'b\'': ['z', 1, 90],
+    'l': ['x', -1, -90],  'l\'': ['x', -1, 90],
+    'd': ['y', -1, -90],  'd\'': ['y', -1, 90]
 }
 
 
@@ -110,14 +109,14 @@ def automatic_input(args):
     process_input(0)
 
 
-def display(args):
+def displayR2(args):
     '''Display 3D Rubik's Cube, manipulating Blender Object'''
 
     global args_g
 
     args_g = args
 
-    for position in product((-1, 0, 1), repeat=3):
+    for position in product((0, 1), repeat=3):
         cubes.append(
             Entity(
                 model='textures/cube.obj',
@@ -141,7 +140,7 @@ def input(key):
     if held_keys['1']:
         automatic_input(args_g)
     elif held_keys['space']:
-        automatic_input(generate_input(10))
+        automatic_input(generate_input(20))
     elif held_keys['escape']:
         exit()
 

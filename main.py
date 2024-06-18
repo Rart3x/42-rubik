@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 
+import argparse
 import os
 import sys
 
-from Display import *
+from DisplayR2 import *
+from DisplayR3 import *
 from Rubik import *
 from Utils import *
 
 
-def main() -> int:
+def main(flag) -> int:
     '''Main function'''
 
     rubik = Rubik()
@@ -16,13 +18,23 @@ def main() -> int:
     if os.path.exists("./models_compressed/"):
         os.remove("./models_compressed/cube.bam")
         os.rmdir("./models_compressed")
-
+    
     try:
         rubik.set_args(check_args_validity(len(sys.argv), sys.argv))
-        display(rubik.get_args())
+        displayR3(rubik.get_args())
     except ValueError as e:
         print("\033[31m", e, "\033[30m")
 
 
 if __name__ == "__main__":
-    main()
+    '''Flag creation'''
+
+    parser = argparse.ArgumentParser(description="Generate an interactive 3D Rubik's Cube with Ursina")
+    parser.add_argument("--size", type=int, default=3, help="Specifies the size of the cube")
+    
+    args = parser.parse_args()
+    
+    if args.size < 2 or args.size > 3:
+        print("\033[31m", "Error: size flag must be 2 or 3", "\033[30m")
+
+    main(args.size)
