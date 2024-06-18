@@ -6,19 +6,9 @@ from ursina import *
 from Utils import generate_input
 
 
-app = Ursina(development_mode=False, title="Rubik")
-center = Entity()
-root = tkinter.Tk()
-
 cubes = []
 duration = 0.1
 in_animation = False
-w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-
-window.size = (w / 2, h / 2)
-window.position = (w  / 4, h  / 4)
-
-EditorCamera()
 
 rot_dict = {
     'f': ['z', -1, 90],  'f\'': ['z', -1, -90],
@@ -32,6 +22,8 @@ rot_dict = {
 
 def apply_movement(axis, layer):
     '''Apply movement function'''
+
+    global cubes
 
     for cube in cubes:
         cube.position, cube.rotation = (
@@ -112,11 +104,13 @@ def automatic_input(args):
 def displayR2(args):
     '''Display 3D Rubik's Cube, manipulating Blender Object'''
 
-    global args_g
+    init()
+
+    global args_g, app, cube
 
     args_g = args
 
-    for position in product((0, 1), repeat=3):
+    for position in product((-1, 0, 1), repeat=3):
         cubes.append(
             Entity(
                 model='textures/cube.obj',
@@ -127,6 +121,22 @@ def displayR2(args):
         )
 
     app.run()
+
+
+def init():
+
+    global app, center
+
+    app = Ursina(development_mode=False, title="Rubik")
+    center = Entity()
+    root = tkinter.Tk()
+
+    w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+
+    window.size = (w / 2, h / 2)
+    window.position = (w  / 4, h  / 4)
+
+    EditorCamera()
 
 
 def input(key):

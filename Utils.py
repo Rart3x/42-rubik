@@ -1,18 +1,19 @@
 import random
 
 
-def check_args_validity(ac, av):
+def check_args_validity(ac, extra, flag):
     '''CheckArgs validity'''
-
-    if ac > 2:
+    
+    print
+    if ac > 4:
         raise ValueError("Error: Invalid number of arguments")
-    if ac < 2:
+    if ac < 4:
         return
 
-    if not is_in_set(av[1]):
+    if not is_in_set(extra):
         raise ValueError("Error: Invalid caracter in arguments")
 
-    args = av[1].split()
+    args = extra.split()
 
     if not check_splitted_args(args):
         raise ValueError("Error: Invalid pattern in arguments")
