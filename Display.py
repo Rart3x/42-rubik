@@ -6,7 +6,7 @@ from ursina import *
 from Utils import generate_input
 
 
-app = Ursina(development_mode=False)
+app = Ursina(development_mode=False, title="Rubik")
 center = Entity()
 root = tkinter.Tk()
 
@@ -15,7 +15,6 @@ duration = 0.5
 in_animation = False
 w, h = root.winfo_screenwidth(), root.winfo_screenheight()
 
-window.borderless = True
 window.size = (w / 2, h / 2)
 window.position = (w  / 4, h  / 4)
 

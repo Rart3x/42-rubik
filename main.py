@@ -7,8 +7,6 @@ from Display import *
 from Rubik import *
 from Utils import *
 
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-
 
 def main() -> int:
     '''Main function'''

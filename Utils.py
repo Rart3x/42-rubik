@@ -53,15 +53,18 @@ def check_splitted_args(args):
 def generate_input(i):
     '''Generate i input to apply to the Rubik's Cube'''
 
-    inputs_chars = {
-        "F", "R", "U", "B", "L", "D", "E", "M", "S"
-    } | {
-        "F2", "R2", "U2", "B2", "L2", "D2"
-    } | {
+    inputs_chars = [
+        "F", "R", "U", "B", "L", "D", "E", "M", "S",
+        "F2", "R2", "U2", "B2", "L2", "D2",
         "F'", "R'", "U'", "B'", "L'", "D'", "E'", "M'", "S'"
-    }
-
-    random_chars = random.sample(inputs_chars, k=i)
+    ]
+    
+    random_chars = []
+    
+    for _ in range(i):
+        index = random.randint(0, len(inputs_chars) - 1)
+        char = inputs_chars[index]
+        random_chars.append(char)
 
     return random_chars
 
