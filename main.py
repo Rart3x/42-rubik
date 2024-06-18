@@ -15,13 +15,20 @@ def main(flag) -> int:
 
     rubik = Rubik()
 
+    print(flag)
     if os.path.exists("./models_compressed/"):
         os.remove("./models_compressed/cube.bam")
         os.rmdir("./models_compressed")
     
     try:
         rubik.set_args(check_args_validity(len(sys.argv), sys.argv))
-        displayR2(rubik.get_args())
+        
+        if flag == 2:
+            displayR2(rubik.get_args())
+        if flag == 3:
+            pass
+            # displayR3(rubik.get_args())
+
     except ValueError as e:
         print("\033[31m", e, "\033[30m")
 
