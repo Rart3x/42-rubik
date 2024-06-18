@@ -6,7 +6,7 @@ from ursina import *
 from Utils import generate_input
 
 
-app = Ursina()
+app = Ursina(development_mode=False)
 center = Entity()
 root = tkinter.Tk()
 
@@ -17,7 +17,7 @@ w, h = root.winfo_screenwidth(), root.winfo_screenheight()
 
 window.borderless = True
 window.size = (w / 2, h / 2)
-window.position = (w  / 2, h  / 2)
+window.position = (w  / 4, h  / 4)
 
 EditorCamera()
 
@@ -66,7 +66,7 @@ def automatic_input(args):
         
         if len(i) > 1 and i[1].isdigit() and not in_animation:
             for _ in range(2):
-               
+
                 in_animation = True
 
                 axis, layer, angle = rot_dict[i[0].lower()]

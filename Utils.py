@@ -61,7 +61,7 @@ def generate_input(i):
         "F'", "R'", "U'", "B'", "L'", "D'", "E'", "M'", "S'"
     }
 
-    random_chars = random.sample(inputs_chars, i)
+    random_chars = random.sample(inputs_chars, k=i)
 
     return random_chars
 
