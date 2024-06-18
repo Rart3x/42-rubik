@@ -4,13 +4,13 @@ import argparse
 import os
 import sys
 
-# from DisplayR2 import displayR2
-from DisplayR3 import displayR3
+from DisplayR2 import *
+# from DisplayR3 import *
 from Rubik import *
 from Utils import *
 
 
-def main(flag, extra) -> int:
+def main(flag) -> int:
     '''Main function'''
 
     rubik = Rubik()
@@ -18,19 +18,12 @@ def main(flag, extra) -> int:
     if os.path.exists("./models_compressed/"):
         os.remove("./models_compressed/cube.bam")
         os.rmdir("./models_compressed")
+    
     try:
-        rubik.set_args(check_args_validity(len(sys.argv), extra))
-            
-        if flag == 2:
-            pass
-            # displayR2(rubik.get_args())
-        else:
-            displayR3(rubik.get_args())
-        
+        rubik.set_args(check_args_validity(len(sys.argv), sys.argv))
+        displayR2(rubik.get_args())
     except ValueError as e:
         print("\033[31m", e, "\033[30m")
-    
-    return 0
 
 
 if __name__ == "__main__":
@@ -45,4 +38,4 @@ if __name__ == "__main__":
     if args.size < 2 or args.size > 3:
         print("\033[31m", "Error: size flag must be 2 or 3", "\033[30m")
 
-    main(args.size, args.extra)
+    main(args.size)
