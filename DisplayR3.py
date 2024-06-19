@@ -3,7 +3,7 @@ import tkinter
 from itertools import product
 from ursina import *
 
-from Utils import generate_input
+from Utils import expand_double_inputs, generate_input
 
 
 cubes = []
@@ -45,28 +45,18 @@ def automatic_input(args):
     if args is None:
         return
 
+    modified_args = expand_double_inputs(args)
+
     def process_input(index):
         
         global in_animation
 
-        if index >= len(args):
+        if index >= len(modified_args):
             return
 
-        i = args[index]
-        
-        if len(i) > 1 and i[1].isdigit() and not in_animation:
-            for _ in range(2):
+        i = modified_args[index]
 
-                in_animation = True
-
-                axis, layer, angle = rot_dict[i[0].lower()]
-                apply_movement(axis, layer)
-                
-                animate_rotation(center, axis, angle, duration)
-                
-                invoke(lambda: process_next_input(index), delay=duration + duration / 2)
-
-        elif len(i) > 1 and not i[1].isdigit() and not in_animation:
+        if len(i) > 1 and not i[1].isdigit() and not in_animation:
             
             in_animation = True
 
@@ -146,8 +136,8 @@ def input(key):
 
     if held_keys['1']:
         automatic_input(args_g)
-    elif held_keys['space']:
-        automatic_input(generate_input(10))
+    if held_keys['space']:
+        automatic_input(generate_input(100))
     elif held_keys['escape']:
         exit()
 
@@ -164,14 +154,13 @@ def input(key):
     invoke(end_animation, delay=duration + duration / 2)
 
 
-def animate_rotation(entity, axis, angle, duration):
-    
+def animate_rotation(center, axis, angle, duration):
     if axis == 'x':
-        entity.animate('rotation_x', angle, duration=duration)
+        center.animate('rotation_x', angle, duration=duration)
     elif axis == 'y':
-        entity.animate('rotation_y', angle, duration=duration)
+        center.animate('rotation_y', angle, duration=duration)
     elif axis == 'z':
-        entity.animate('rotation_z', angle, duration=duration)
+        center.animate('rotation_z', angle, duration=duration)
 
 
 def end_animation():

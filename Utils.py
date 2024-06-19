@@ -50,6 +50,19 @@ def check_splitted_args(args):
     return True
 
 
+def expand_double_inputs(args):
+    '''Recreate args [] and cloning X2 inputs by X * 2 input'''
+
+    modified_args = []
+
+    for i in args:
+        if len(i) > 1 and i[1].isdigit():
+            modified_args.extend([i[0]] * 2)
+        else:
+            modified_args.append(i)
+    return modified_args
+
+
 def generate_input(i):
     '''Generate i input to apply to the Rubik's Cube'''
 

@@ -3,35 +3,27 @@ import tkinter
 from itertools import product
 from ursina import *
 
-from Utils import generate_input
+from Utils import expand_double_inputs, generate_input
 
-
-app = Ursina(development_mode=False, title="Rubik")
-center = Entity()
-root = tkinter.Tk()
 
 cubes = []
-duration = 0.1
+duration = 0.3
 in_animation = False
-w, h = root.winfo_screenwidth(), root.winfo_screenheight()
 
-window.size = (w / 2, h / 2)
-window.position = (w  / 4, h  / 4)
+rot_dict = { 'f': ['z', -1, 90],  'r': ['x', 1, 90],     'u': ['y', 1, 90],
+            'b': ['z', 1, -90],  'l': ['x', -1, -90],   'd': ['y', -1, -90],
+            'e': ['y', 0, -90],  'm': ['x', 0, -90],    's': ['z', 0, 90],
 
-EditorCamera()
-
-rot_dict = {
-    'f': ['z', 0, 90],  'f\'': ['z', 0, -90],
-    'r': ['x', 0, 90],  'r\'': ['x', 0, -90],
-    'u': ['y', 0, 90],  'u\'': ['y', 0, -90],
-    'b': ['z', 1, -90], 'b\'': ['z', 1, 90],
-    'l': ['x', 1, -90], 'l\'': ['x', 1, 90],
-    'd': ['y', 1, -90], 'd\'': ['y', 1, 90]
+            'f\'': ['z', -1, -90],'r\'': ['x', 1, -90],  'u\'': ['y', 1, -90],
+            'b\'': ['z', 1, 90],  'l\'': ['x', -1, 90],  'd\'': ['y', -1, 90],
+            'e\'': ['y', 0, 90],  'm\'': ['x', 0, 90],   's\'': ['z', 0, -90]
 }
 
 
 def apply_movement(axis, layer):
     '''Apply movement function'''
+
+    global cubes
 
     for cube in cubes:
         cube.position, cube.rotation = (
@@ -53,28 +45,18 @@ def automatic_input(args):
     if args is None:
         return
 
+    modified_args = expand_double_inputs(args)
+
     def process_input(index):
         
         global in_animation
 
-        if index >= len(args):
+        if index >= len(modified_args):
             return
 
-        i = args[index]
-        
-        if len(i) > 1 and i[1].isdigit() and not in_animation:
-            for _ in range(2):
+        i = modified_args[index]
 
-                in_animation = True
-
-                axis, layer, angle = rot_dict[i[0].lower()]
-                apply_movement(axis, layer)
-                
-                animate_rotation(center, axis, angle, duration)
-                
-                invoke(lambda: process_next_input(index), delay=duration + duration / 2)
-
-        elif len(i) > 1 and not i[1].isdigit() and not in_animation:
+        if len(i) > 1 and not i[1].isdigit() and not in_animation:
             
             in_animation = True
 
@@ -109,7 +91,9 @@ def automatic_input(args):
 def displayR2(args):
     '''Display 3D Rubik's Cube, manipulating Blender Object'''
 
-    global args_g
+    init()
+
+    global args_g, app, cube
 
     args_g = args
 
@@ -126,6 +110,22 @@ def displayR2(args):
     app.run()
 
 
+def init():
+
+    global app, center
+
+    app = Ursina(development_mode=False, title="Rubik")
+    center = Entity()
+    root = tkinter.Tk()
+
+    w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+
+    window.size = (w / 2, h / 2)
+    window.position = (w  / 4, h  / 4)
+
+    EditorCamera()
+
+
 def input(key):
     '''Input keys method'''
 
@@ -136,8 +136,8 @@ def input(key):
 
     if held_keys['1']:
         automatic_input(args_g)
-    elif held_keys['space']:
-        automatic_input(generate_input(20))
+    if held_keys['space']:
+        automatic_input(generate_input(100))
     elif held_keys['escape']:
         exit()
 
@@ -154,14 +154,13 @@ def input(key):
     invoke(end_animation, delay=duration + duration / 2)
 
 
-def animate_rotation(entity, axis, angle, duration):
-
+def animate_rotation(center, axis, angle, duration):
     if axis == 'x':
-        entity.animate('rotation_x', angle, duration=duration)
+        center.animate('rotation_x', angle, duration=duration)
     elif axis == 'y':
-        entity.animate('rotation_y', angle, duration=duration)
+        center.animate('rotation_y', angle, duration=duration)
     elif axis == 'z':
-        entity.animate('rotation_z', angle, duration=duration)
+        center.animate('rotation_z', angle, duration=duration)
 
 
 def end_animation():
