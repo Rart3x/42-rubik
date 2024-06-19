@@ -7,7 +7,7 @@ from Utils import generate_input
 
 
 cubes = []
-duration = 0.1
+duration = 0.3
 in_animation = False
 
 rot_dict = { 'f': ['z', -1, 90],  'r': ['x', 1, 90],     'u': ['y', 1, 90],
@@ -62,8 +62,7 @@ def automatic_input(args):
                 axis, layer, angle = rot_dict[i[0].lower()]
                 apply_movement(axis, layer)
                 
-                shift = held_keys['shift']
-                animate_rotation(center, axis, -angle if shift else angle, duration)
+                animate_rotation(center, axis, angle, duration)
                 
                 invoke(lambda: process_next_input(index), delay=duration + duration / 2)
 
@@ -74,8 +73,7 @@ def automatic_input(args):
             axis, layer, angle = rot_dict[i[0].lower() + i[1]]
             apply_movement(axis, layer)
             
-            shift = held_keys['shift']
-            animate_rotation(center, axis, -angle if shift else angle, duration)
+            animate_rotation(center, axis, angle, duration)
             
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
         
@@ -86,8 +84,7 @@ def automatic_input(args):
             axis, layer, angle = rot_dict[i[0].lower()]
             apply_movement(axis, layer)
             
-            shift = held_keys['shift']
-            animate_rotation(center, axis, -angle if shift else angle, duration)
+            animate_rotation(center, axis, angle, duration)
             
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
 
@@ -150,7 +147,7 @@ def input(key):
     if held_keys['1']:
         automatic_input(args_g)
     elif held_keys['space']:
-        automatic_input(generate_input(20))
+        automatic_input(generate_input(10))
     elif held_keys['escape']:
         exit()
 
@@ -162,8 +159,7 @@ def input(key):
     axis, layer, angle = rot_dict[key]
     apply_movement(axis, layer)
     
-    shift = held_keys['shift']
-    animate_rotation(center, axis, -angle if shift else angle, duration)
+    animate_rotation(center, axis, angle, duration)
     
     invoke(end_animation, delay=duration + duration / 2)
 

@@ -70,8 +70,7 @@ def automatic_input(args):
                 axis, layer, angle = rot_dict[i[0].lower()]
                 apply_movement(axis, layer)
                 
-                shift = held_keys['shift']
-                animate_rotation(center, axis, -angle if shift else angle, duration)
+                animate_rotation(center, axis, angle, duration)
                 
                 invoke(lambda: process_next_input(index), delay=duration + duration / 2)
 
@@ -82,8 +81,7 @@ def automatic_input(args):
             axis, layer, angle = rot_dict[i[0].lower() + i[1]]
             apply_movement(axis, layer)
             
-            shift = held_keys['shift']
-            animate_rotation(center, axis, -angle if shift else angle, duration)
+            animate_rotation(center, axis, angle, duration)
             
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
         
@@ -94,8 +92,7 @@ def automatic_input(args):
             axis, layer, angle = rot_dict[i[0].lower()]
             apply_movement(axis, layer)
             
-            shift = held_keys['shift']
-            animate_rotation(center, axis, -angle if shift else angle, duration)
+            animate_rotation(center, axis, angle, duration)
             
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
 
@@ -152,14 +149,13 @@ def input(key):
     axis, layer, angle = rot_dict[key]
     apply_movement(axis, layer)
     
-    shift = held_keys['shift']
-    animate_rotation(center, axis, -angle if shift else angle, duration)
+    animate_rotation(center, axis, angle, duration)
     
     invoke(end_animation, delay=duration + duration / 2)
 
 
 def animate_rotation(entity, axis, angle, duration):
-    
+
     if axis == 'x':
         entity.animate('rotation_x', angle, duration=duration)
     elif axis == 'y':
