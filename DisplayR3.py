@@ -93,7 +93,7 @@ def displayR3(args):
 
     init()
 
-    global args_g, app, cube
+    global args_g, app, cube, duration
 
     args_g = args
 
@@ -106,8 +106,10 @@ def displayR3(args):
                 scale=0.5
             )
         )
-
+    duration = 0.075
+    automatic_input(generate_input(100))
     app.run()
+    duration = 0.1
 
 
 def init():
