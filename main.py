@@ -5,7 +5,7 @@ import os
 import sys
 
 from DisplayR2 import *
-# from DisplayR3 import *
+from DisplayR3 import *
 from Rubik import *
 from Utils import *
 
@@ -23,11 +23,9 @@ def main(flag) -> int:
         rubik.set_args(check_args_validity(len(sys.argv), sys.argv))
         
         if flag == 2:
-            # pass
             displayR2(rubik.get_args())
         if flag == 3:
-            pass
-            # displayR3(rubik.get_args())
+            displayR3(rubik.get_args())
 
     except ValueError as e:
         print("\033[31m", e, "\033[30m")
