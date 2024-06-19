@@ -7,7 +7,7 @@ from Utils import expand_double_inputs, generate_input
 
 
 cubes = []
-duration = 0.3
+duration = 0.1
 in_animation = False
 
 rot_dict = { 'f': ['z', -1, 90],  'r': ['x', 1, 90],     'u': ['y', 1, 90],
@@ -40,7 +40,7 @@ def apply_movement(axis, layer):
 
 
 def automatic_input(args):
-    '''Pre Input keys method'''
+    '''Automatic/Pre Input keys method'''
 
     if args is None:
         return
@@ -97,7 +97,7 @@ def displayR2(args):
 
     args_g = args
 
-    for position in product((0, 1), repeat=3):
+    for position in product((0, 0, 1), repeat=3):
         cubes.append(
             Entity(
                 model='textures/cube.obj',
@@ -111,6 +111,7 @@ def displayR2(args):
 
 
 def init():
+    '''Init function'''
 
     global app, center
 
@@ -127,9 +128,12 @@ def init():
 
 
 def input(key):
-    '''Input keys method'''
+    '''Input keys function'''
 
     global in_animation
+
+    if held_keys['escape']:
+        exit()
 
     if in_animation:
         return
@@ -138,8 +142,6 @@ def input(key):
         automatic_input(args_g)
     if held_keys['space']:
         automatic_input(generate_input(100))
-    elif held_keys['escape']:
-        exit()
 
     if key not in rot_dict:
         return
@@ -155,6 +157,8 @@ def input(key):
 
 
 def animate_rotation(center, axis, angle, duration):
+    '''Animation rotation function, apply good animation'''
+
     if axis == 'x':
         center.animate('rotation_x', angle, duration=duration)
     elif axis == 'y':
@@ -164,6 +168,7 @@ def animate_rotation(center, axis, angle, duration):
 
 
 def end_animation():
-    
+    '''End animation function, pass in_animation to False after duration time'''
+
     global in_animation
     in_animation = False
