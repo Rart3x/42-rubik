@@ -93,7 +93,7 @@ def displayR2(args):
 
     init()
 
-    global args_g, app, cube, duration
+    global args_g, app, cube
 
     args_g = args
 
@@ -107,10 +107,8 @@ def displayR2(args):
             )
         )
 
-    duration = 0.075
     automatic_input(generate_input(100))
     app.run()
-    duration = 0.1
 
 
 def init():
