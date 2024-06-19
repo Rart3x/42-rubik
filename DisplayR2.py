@@ -107,7 +107,7 @@ def displayR2(args):
             )
         )
 
-    automatic_input(generate_input(100))
+    automatic_input(generate_input(50))
     app.run()
 
 
@@ -139,7 +139,7 @@ def input(key):
     if in_animation:
         return
 
-    if held_keys['1']:
+    if held_keys['tab']:
         automatic_input(args_g)
     if held_keys['space']:
         automatic_input(generate_input(100))

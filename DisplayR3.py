@@ -107,19 +107,35 @@ def displayR3(args):
             )
         )
 
-    automatic_input(generate_input(100))
+    automatic_input(generate_input(50))
     app.run()
+
+
+def submit():
+    '''Submit method for mixing generator in frontend'''
+
+    input_text = nbr_field.text
+    input_integer = int(input_text)
+
+    if input_integer > 1000:
+        return
+
+    automatic_input(generate_input(input_integer))
 
 
 def init():
     '''Init function'''
 
-    global app, center
+    global app, center, nbr_field
 
     app = Ursina(development_mode=False, title="Rubik")
     center = Entity()
     root = tkinter.Tk()
 
+    nbr_field = InputField(y=-.35, limit_content_to='0123456789', active=True)
+    
+    Button(text='Mixing', scale=.1, color=color.cyan.tint(-.4), x=0.30, y=-.35, on_click=submit).fit_to_text()
+    
     w, h = root.winfo_screenwidth(), root.winfo_screenheight()
 
     window.size = (w / 2, h / 2)
@@ -139,7 +155,7 @@ def input(key):
     if in_animation:
         return
 
-    if held_keys['1']:
+    if held_keys['tab']:
         automatic_input(args_g)
     if held_keys['space']:
         automatic_input(generate_input(1000))
