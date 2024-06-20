@@ -117,6 +117,8 @@ def submit():
     input_text = nbr_field.text
     input_integer = int(input_text)
 
+    nbr_field.text = ""
+
     if input_integer > 1000:
         return
 
