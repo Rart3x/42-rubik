@@ -1,4 +1,5 @@
 import tkinter
+import os
 
 from itertools import product
 from ursina import *
@@ -88,7 +89,7 @@ def automatic_input(args):
     process_input(0)
 
 
-def displayR2(args):
+def display(args):
     '''Display 3D Rubik's Cube, manipulating Blender Object'''
 
     init()
@@ -97,7 +98,7 @@ def displayR2(args):
 
     args_g = args
 
-    for position in product((0, 0, 1), repeat=3):
+    for position in product((-1, 0, 1), repeat=3):
         cubes.append(
             Entity(
                 model='textures/cube.obj',
@@ -111,15 +112,33 @@ def displayR2(args):
     app.run()
 
 
+def submit():
+    '''Submit method for mixing generator in frontend'''
+
+    input_text = nbr_field.text
+    input_integer = int(input_text)
+
+    nbr_field.text = ""
+
+    if input_integer > 1000:
+        return
+
+    automatic_input(generate_input(input_integer))
+
+
 def init():
     '''Init function'''
 
-    global app, center
+    global app, center, nbr_field
 
     app = Ursina(development_mode=False, title="Rubik")
     center = Entity()
     root = tkinter.Tk()
 
+    nbr_field = InputField(y=-.35, limit_content_to='0123456789', active=True)
+    
+    Button(text='Mixing', scale=.1, color=color.cyan.tint(-.4), x=0.30, y=-.35, on_click=submit).fit_to_text()
+    
     w, h = root.winfo_screenwidth(), root.winfo_screenheight()
 
     window.size = (w / 2, h / 2)
@@ -142,7 +161,7 @@ def input(key):
     if held_keys['tab']:
         automatic_input(args_g)
     if held_keys['space']:
-        automatic_input(generate_input(100))
+        automatic_input(generate_input(1000))
 
     if key not in rot_dict:
         return
