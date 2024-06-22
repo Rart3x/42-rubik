@@ -43,6 +43,7 @@ def apply_movement(axis, layer):
 def automatic_input(args):
     '''Automatic/Pre Input keys method'''
 
+
     if args is None:
         return
 
@@ -51,7 +52,7 @@ def automatic_input(args):
     def process_input(index):
         
         global in_animation
-
+        
         if index >= len(modified_args):
             return
 
@@ -94,7 +95,7 @@ def display(args):
 
     init()
 
-    global args_g, app, cube
+    global args_g, app
 
     args_g = args
 
@@ -110,41 +111,6 @@ def display(args):
 
     automatic_input(generate_input(50))
     app.run()
-
-
-def submit():
-    '''Submit method for mixing generator in frontend'''
-
-    input_text = nbr_field.text
-    input_integer = int(input_text)
-
-    nbr_field.text = ""
-
-    if input_integer > 1000:
-        return
-
-    automatic_input(generate_input(input_integer))
-
-
-def init():
-    '''Init function'''
-
-    global app, center, nbr_field
-
-    app = Ursina(development_mode=False, title="Rubik")
-    center = Entity()
-    root = tkinter.Tk()
-
-    nbr_field = InputField(y=-.35, limit_content_to='0123456789', active=True)
-    
-    Button(text='Mixing', scale=.1, color=color.cyan.tint(-.4), x=0.30, y=-.35, on_click=submit).fit_to_text()
-    
-    w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-
-    window.size = (w / 2, h / 2)
-    window.position = (w  / 4, h  / 4)
-
-    EditorCamera()
 
 
 def input(key):
@@ -192,3 +158,38 @@ def end_animation():
 
     global in_animation
     in_animation = False
+
+
+def init():
+    '''Init function'''
+
+    global app, center, nbr_field
+
+    app = Ursina(development_mode=False, title="Rubik")
+    center = Entity()
+    root = tkinter.Tk()
+
+    nbr_field = InputField(y=-.35, limit_content_to='0123456789', active=True)
+    
+    Button(text='Mixing', scale=.1, color=color.cyan.tint(-.4), x=0.30, y=-.35, on_click=submit).fit_to_text()
+    
+    w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+
+    window.size = (w / 2, h / 2)
+    window.position = (w  / 4, h  / 4)
+
+    EditorCamera()
+
+
+def submit():
+    '''Submit method for mixing generator in frontend'''
+
+    input_text = nbr_field.text
+    input_integer = int(input_text)
+
+    nbr_field.text = ""
+
+    if input_integer > 1000:
+        return
+
+    automatic_input(generate_input(input_integer))
