@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os
 import sys
 
@@ -9,7 +7,7 @@ from Utils import *
 
 
 def main() -> int:
-    '''Main function'''
+    """Main function"""
 
     rubik = Rubik()
 
@@ -20,12 +18,13 @@ def main() -> int:
     try:
         rubik.set_args(check_args_validity(len(sys.argv), sys.argv))
 
-        display(rubik.get_args())
+        display(rubik)
 
     except ValueError as e:
         print("\033[31m", e, "\033[30m")
 
+    return 0
+
 
 if __name__ == "__main__":
-
     main()

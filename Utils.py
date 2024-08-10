@@ -1,8 +1,9 @@
+import os
 import random
 
 
 def check_args_validity(ac, av):
-    '''CheckArgs validity'''
+    """CheckArgs validity"""
     
     if ac > 2:
         raise ValueError("Error: Invalid number of arguments")
@@ -18,12 +19,28 @@ def check_args_validity(ac, av):
         raise ValueError("Error: Invalid pattern in arguments")
     if not is_spaced(args):
         raise ValueError("Error: Invalid spacing in arguments")
+    if not check_textures():
+        raise ValueError("Error: Missing textures")
 
     return args
 
 
+def check_textures():
+    """CheckTextures function"""
+
+    textures = {
+        "textures/"
+        "textures/cube.png",
+        "textures/cube.obj"
+    }
+
+    for texture in textures:
+        if not os.path.exists(texture):
+            return False
+
+
 def check_splitted_args(args):
-    '''CheckSplitted function'''
+    """CheckSplit function"""
 
     letters = {
         'F', 'R', 'U', 'B', 'L', 'D'
@@ -51,7 +68,7 @@ def check_splitted_args(args):
 
 
 def expand_double_inputs(args):
-    '''Recreate args [] and cloning X2 inputs by X * 2 input'''
+    """Recreate args [] and cloning X2 inputs by X * 2 input"""
 
     modified_args = []
 
@@ -64,7 +81,7 @@ def expand_double_inputs(args):
 
 
 def generate_input(i):
-    '''Generate i input to apply to the Rubik's Cube'''
+    """Generate I input to apply to the Rubik's Cube"""
 
     inputs_chars = [
         "F", "R", "U", "B", "L", "D", "E", "M", "S",
@@ -83,7 +100,7 @@ def generate_input(i):
 
 
 def is_in_set(arg):
-    '''IsInSet function'''
+    """IsInSet function"""
 
     set_chars = {
         'F', 'R', 'U', 'B', 'L', 'D', '2', "'", ' '
@@ -98,7 +115,7 @@ def is_in_set(arg):
 
 
 def is_spaced(args):
-    '''IsSpaced function'''
+    """IsSpaced function"""
 
     for arg in args:
         if len(arg) > 2:
