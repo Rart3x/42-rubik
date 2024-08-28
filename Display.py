@@ -5,11 +5,16 @@ from itertools import product
 from ursina import *
 
 from Rubik import Rubik
-from Utils import expand_double_inputs, generate_input
+from Utils import decompose_arr_args, expand_double_inputs, generate_input
 
+actual_seq = []
+user_seq = []
 cubes = []
+
 duration = 0.1
+
 in_animation = False
+register = False
 
 rot_dict = {'f': ['z', -1, 90], 'r': ['x', 1, 90], 'u': ['y', 1, 90],
             'b': ['z', 1, -90], 'l': ['x', -1, -90], 'd': ['y', -1, -90],
@@ -98,6 +103,7 @@ def display(rubik: Rubik):
 
     args_g = rubik.get_args()
 
+    #Create each Rubik's cube, each cube have every color, the Rubik's Cube is completed when created
     for position in product((-1, 0, 1), repeat=3):
         cubes.append(
             Entity(
@@ -114,7 +120,7 @@ def display(rubik: Rubik):
 def input(key):
     """Input keys function"""
 
-    global in_animation
+    global in_animation, register
 
     if held_keys['escape']:
         exit()
@@ -122,15 +128,40 @@ def input(key):
     if in_animation:
         return
 
+    #Switch in sequence mode
+    if held_keys['1']:
+        register = not register
+
+    #Use user inputs
     if held_keys['tab']:
+        if not register:
+            actual_seq.append(args_g)
+        else:
+            user_seq.append(args_g)
         automatic_input(args_g)
+
+    #Generate 1000 random inputs
     if held_keys['space']:
-        automatic_input(generate_input(1000))
+        inputs = generate_input(1000)
+        if not register:
+            decompose_arr_args(inputs, actual_seq)
+        else:
+            decompose_arr_args(inputs, user_seq)
+        automatic_input(inputs)
 
     if key not in rot_dict:
         return
 
     in_animation = True
+
+    #Register keyboard inputs
+    if not register:
+        actual_seq.append(key)
+    if register:
+        user_seq.append(key)
+
+    print(actual_seq)
+    print(user_seq)
 
     axis, layer, angle = rot_dict[key]
     apply_movement(axis, layer)
@@ -178,10 +209,16 @@ def init():
 
     EditorCamera()
 
-    args = generate_input(50)
-    automatic_input(args)
+    inputs = generate_input(50)
+    decompose_arr_args(inputs, actual_seq)
+    automatic_input(inputs)
 
-    return args
+    return inputs
+
+
+def record_sequence():
+    """Record user sequence, in order to train user in Rubik resolution"""
+
 
 
 def submit():
@@ -195,4 +232,11 @@ def submit():
     if input_integer > 1000:
         return
 
-    automatic_input(generate_input(input_integer))
+    inputs = generate_input(input_integer)
+
+    if not register:
+        decompose_arr_args(inputs, actual_seq)
+    if register:
+        decompose_arr_args(inputs, user_seq)
+
+    automatic_input(inputs)

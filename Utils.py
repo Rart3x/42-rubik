@@ -19,8 +19,8 @@ def check_args_validity(ac, av):
         raise ValueError("Error: Invalid pattern in arguments")
     if not is_spaced(args):
         raise ValueError("Error: Invalid spacing in arguments")
-    if not check_textures():
-        raise ValueError("Error: Missing textures")
+#     if not check_textures():
+#         raise ValueError("Error: Missing textures")
 
     return args
 
@@ -67,6 +67,13 @@ def check_splitted_args(args):
     return True
 
 
+def decompose_arr_args(arr: [], dest: []):
+    """Decompose array arguments in N arguments and append them on dest"""
+
+    for args in arr:
+        dest.append(args)
+
+
 def expand_double_inputs(args):
     """Recreate args [] and cloning X2 inputs by X * 2 input"""
 
@@ -85,7 +92,7 @@ def generate_input(i):
 
     inputs_chars = [
         "F", "R", "U", "B", "L", "D", "E", "M", "S",
-        "F2", "R2", "U2", "B2", "L2", "D2" "E2", "M2", "S2",
+        "F2", "R2", "U2", "B2", "L2", "D2", "E2", "M2", "S2",
         "F'", "R'", "U'", "B'", "L'", "D'", "E'", "M'", "S'"
     ]
     

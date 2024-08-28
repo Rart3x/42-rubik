@@ -17,7 +17,6 @@ def main() -> int:
 
     try:
         rubik.set_args(check_args_validity(len(sys.argv), sys.argv))
-
         display(rubik)
 
     except ValueError as e:
