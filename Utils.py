@@ -128,3 +128,14 @@ def is_spaced(args):
         if len(arg) > 2:
             return False
     return True
+
+
+def reverse_seq(seq: []):
+    """Reverse a sequence of movements"""
+
+    reverse = []
+
+    for arg in seq:
+        reverse.append(arg + "'")
+
+    return reverse

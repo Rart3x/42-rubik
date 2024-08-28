@@ -5,10 +5,14 @@ from itertools import product
 from ursina import *
 
 from Rubik import Rubik
-from Utils import decompose_arr_args, expand_double_inputs, generate_input
+from Utils import decompose_arr_args, expand_double_inputs, generate_input, reverse_seq
 
-actual_seq = []
-user_seq = []
+idx_r_seq = 0
+
+seq = []
+r_seq = []
+u_seq = []
+
 cubes = []
 
 duration = 0.1
@@ -103,7 +107,7 @@ def display(rubik: Rubik):
 
     args_g = rubik.get_args()
 
-    #Create each Rubik's cube, each cube have every color, the Rubik's Cube is completed when created
+    #Create each Rubik's cube, each cube have every color on each faces, the Rubik's Cube is completed when created
     for position in product((-1, 0, 1), repeat=3):
         cubes.append(
             Entity(
@@ -120,7 +124,7 @@ def display(rubik: Rubik):
 def input(key):
     """Input keys function"""
 
-    global in_animation, register
+    global in_animation, idx_r_seq, register, r_seq, u_seq
 
     if held_keys['escape']:
         exit()
@@ -128,47 +132,69 @@ def input(key):
     if in_animation:
         return
 
-    #Switch in sequence mode
-    if held_keys['1']:
+    #Switch ON registering mode
+    if held_keys['1'] and not register:
+        r_seq, u_seq = [], []
         register = not register
+
+    #Switch OFF registering mode
+    if held_keys['2'] and register:
+        register = not register
+
+    #Activate sequence mode
+    if held_keys['3'] and not register:
+        sequence_mode()
+
+    #Navigate on normal/reverse movements with keyboard arrows
+    # if held_keys["left arrow"] and len(r_seq) > 0:
+    #     if not idx_r_seq < len(r_seq):
+    #         idx_r_seq -= 1
+    #         automatic_input(r_seq[idx_r_seq])
+    #
+    # if held_keys["right arrow"] and len(u_seq) > 0:
+    #     if not idx_r_seq < len(u_seq):
+    #         idx_r_seq += 1
+    #         automatic_input(u_seq[idx_r_seq])
 
     #Use user inputs
     if held_keys['tab']:
+        r_seq, u_seq = [], []
         if not register:
-            actual_seq.append(args_g)
+            seq.append(args_g)
         else:
-            user_seq.append(args_g)
+            u_seq.append(args_g)
         automatic_input(args_g)
 
     #Generate 1000 random inputs
-    if held_keys['space']:
+    if held_keys['space'] and not register:
+        r_seq, u_seq = [], []
         inputs = generate_input(1000)
         if not register:
-            decompose_arr_args(inputs, actual_seq)
+            decompose_arr_args(inputs, seq)
         else:
-            decompose_arr_args(inputs, user_seq)
+            decompose_arr_args(inputs, u_seq)
         automatic_input(inputs)
 
     if key not in rot_dict:
         return
 
-    in_animation = True
-
     #Register keyboard inputs
     if not register:
-        actual_seq.append(key)
+        seq.append(key)
     if register:
-        user_seq.append(key)
+        u_seq.append(key)
 
-    print(actual_seq)
-    print(user_seq)
+    print(u_seq)
 
-    axis, layer, angle = rot_dict[key]
-    apply_movement(axis, layer)
+    if not register:
+        in_animation = True
 
-    animate_rotation(center, axis, angle, duration)
+        axis, layer, angle = rot_dict[key]
+        apply_movement(axis, layer)
 
-    invoke(end_animation, delay=duration + duration / 2)
+        animate_rotation(center, axis, angle, duration)
+
+        invoke(end_animation, delay=duration + duration / 2)
 
 
 def animate_rotation(center, axis, angle, duration):
@@ -210,15 +236,22 @@ def init():
     EditorCamera()
 
     inputs = generate_input(50)
-    decompose_arr_args(inputs, actual_seq)
-    automatic_input(inputs)
-
-    return inputs
+    decompose_arr_args(inputs, seq)
+    # automatic_input(inputs)
 
 
-def record_sequence():
-    """Record user sequence, in order to train user in Rubik resolution"""
+def sequence_mode():
+    """Sequence mode in order to train user in Rubik resolution"""
 
+    global duration, r_seq
+
+    r_seq = reverse_seq(u_seq)
+
+    duration = 0.5
+
+    automatic_input(u_seq)
+
+    duration = 0.1
 
 
 def submit():
@@ -235,8 +268,8 @@ def submit():
     inputs = generate_input(input_integer)
 
     if not register:
-        decompose_arr_args(inputs, actual_seq)
+        decompose_arr_args(inputs, seq)
     if register:
-        decompose_arr_args(inputs, user_seq)
+        decompose_arr_args(inputs, u_seq)
 
     automatic_input(inputs)
