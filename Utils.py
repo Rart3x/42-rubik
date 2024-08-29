@@ -80,6 +80,9 @@ def expand_double_inputs(args):
     modified_args = []
 
     for i in args:
+        if len(i) > 1 and i[1] == "'":
+            print("ici")
+            modified_args.append([i[0] + "'"])
         if len(i) > 1 and i[1].isdigit():
             modified_args.extend([i[0]] * 2)
         else:

@@ -7,18 +7,16 @@ from ursina import *
 from Rubik import Rubik
 from Utils import decompose_arr_args, expand_double_inputs, generate_input, reverse_seq
 
-idx_r_seq = 0
+idx = 0
 
 seq = []
 r_seq = []
-u_seq = []
 
 cubes = []
 
 duration = 0.1
 
 in_animation = False
-register = False
 
 rot_dict = {'f': ['z', -1, 90], 'r': ['x', 1, 90], 'u': ['y', 1, 90],
             'b': ['z', 1, -90], 'l': ['x', -1, -90], 'd': ['y', -1, -90],
@@ -124,7 +122,7 @@ def display(rubik: Rubik):
 def input(key):
     """Input keys function"""
 
-    global in_animation, idx_r_seq, register, r_seq, u_seq
+    global in_animation, idx, r_seq
 
     if held_keys['escape']:
         exit()
@@ -132,69 +130,46 @@ def input(key):
     if in_animation:
         return
 
-    #Switch ON registering mode
-    if held_keys['1'] and not register:
-        r_seq, u_seq = [], []
-        register = not register
+    # Navigate on normal/reverse movements with keyboard arrows
+    if held_keys["left arrow"]:
+        r_seq = reverse_seq(seq)
+        idx = len(r_seq) - 1
+        if len(r_seq) > 0:
+            if len(r_seq) > idx >= 0:
+                idx -= 1
+                automatic_input(r_seq[idx])
 
-    #Switch OFF registering mode
-    if held_keys['2'] and register:
-        register = not register
-
-    #Activate sequence mode
-    if held_keys['3'] and not register:
-        sequence_mode()
-
-    #Navigate on normal/reverse movements with keyboard arrows
-    # if held_keys["left arrow"] and len(r_seq) > 0:
-    #     if not idx_r_seq < len(r_seq):
-    #         idx_r_seq -= 1
-    #         automatic_input(r_seq[idx_r_seq])
-    #
-    # if held_keys["right arrow"] and len(u_seq) > 0:
-    #     if not idx_r_seq < len(u_seq):
-    #         idx_r_seq += 1
-    #         automatic_input(u_seq[idx_r_seq])
+    if held_keys["right arrow"] and len(seq) > 0:
+        idx = len(r_seq) - 1
+        if idx < len(seq) - 1:
+            idx += 1
+            automatic_input(seq[idx])
 
     #Use user inputs
     if held_keys['tab']:
-        r_seq, u_seq = [], []
-        if not register:
-            seq.append(args_g)
-        else:
-            u_seq.append(args_g)
+        seq.append(args_g)
         automatic_input(args_g)
 
     #Generate 1000 random inputs
-    if held_keys['space'] and not register:
-        r_seq, u_seq = [], []
-        inputs = generate_input(1000)
-        if not register:
-            decompose_arr_args(inputs, seq)
-        else:
-            decompose_arr_args(inputs, u_seq)
+    if held_keys['space']:
+        inputs = generate_input(100)
+        decompose_arr_args(inputs, seq)
         automatic_input(inputs)
 
     if key not in rot_dict:
         return
 
     #Register keyboard inputs
-    if not register:
-        seq.append(key)
-    if register:
-        u_seq.append(key)
+    seq.append(key)
 
-    print(u_seq)
+    in_animation = True
 
-    if not register:
-        in_animation = True
+    axis, layer, angle = rot_dict[key]
+    apply_movement(axis, layer)
 
-        axis, layer, angle = rot_dict[key]
-        apply_movement(axis, layer)
+    animate_rotation(center, axis, angle, duration)
 
-        animate_rotation(center, axis, angle, duration)
-
-        invoke(end_animation, delay=duration + duration / 2)
+    invoke(end_animation, delay=duration + duration / 2)
 
 
 def animate_rotation(center, axis, angle, duration):
@@ -236,22 +211,8 @@ def init():
     EditorCamera()
 
     inputs = generate_input(50)
-    decompose_arr_args(inputs, seq)
+    # decompose_arr_args(inputs, seq)
     # automatic_input(inputs)
-
-
-def sequence_mode():
-    """Sequence mode in order to train user in Rubik resolution"""
-
-    global duration, r_seq
-
-    r_seq = reverse_seq(u_seq)
-
-    duration = 0.5
-
-    automatic_input(u_seq)
-
-    duration = 0.1
 
 
 def submit():
@@ -266,10 +227,5 @@ def submit():
         return
 
     inputs = generate_input(input_integer)
-
-    if not register:
-        decompose_arr_args(inputs, seq)
-    if register:
-        decompose_arr_args(inputs, u_seq)
-
+    decompose_arr_args(inputs, seq)
     automatic_input(inputs)
