@@ -133,17 +133,26 @@ def input(key):
     # Navigate on normal/reverse movements with keyboard arrows
     if held_keys["left arrow"]:
         r_seq = reverse_seq(seq)
-        idx = len(r_seq) - 1
-        if len(r_seq) > 0:
+        if len(r_seq) > 0 and idx - 1 >= -1:
+            idx = len(r_seq) - 1
             if len(r_seq) > idx >= 0:
                 idx -= 1
-                automatic_input(r_seq[idx])
+                axis, layer, angle = rot_dict[r_seq[idx]]
+                apply_movement(axis, layer)
+
+                animate_rotation(center, axis, angle, duration)
+
+                invoke(end_animation, delay=duration + duration / 2)
 
     if held_keys["right arrow"] and len(seq) > 0:
-        idx = len(r_seq) - 1
         if idx < len(seq) - 1:
             idx += 1
-            automatic_input(seq[idx])
+            axis, layer, angle = rot_dict[seq[idx]]
+            apply_movement(axis, layer)
+
+            animate_rotation(center, axis, angle, duration)
+
+            invoke(end_animation, delay=duration + duration / 2)
 
     #Use user inputs
     if held_keys['tab']:
