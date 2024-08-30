@@ -136,8 +136,9 @@ def input(key):
         if len(r_seq) > 0 and idx - 1 >= -1:
             idx = len(r_seq) - 1
             if len(r_seq) > idx >= 0:
-                idx -= 1
-
+                print("Reverse SEQ idx  : " + str(idx))
+                print("Reverse SEQ idx : " + r_seq[idx])
+                print("Reverse SEQ : ", r_seq)
                 in_animation = True
 
                 axis, layer, angle = rot_dict[r_seq[idx]]
@@ -146,9 +147,13 @@ def input(key):
                 animate_rotation(center, axis, angle, duration)
                 invoke(end_animation, delay=duration + duration / 2)
 
+                idx -= 1
+
     if held_keys["right arrow"] and len(seq) > 0:
         if idx < len(seq) - 1:
-            idx += 1
+            print("SEQ idx val : " + str(idx))
+            print("SEQ idx : " + seq[idx])
+            print("SEQ : ", seq)
 
             in_animation = True
 
@@ -157,6 +162,8 @@ def input(key):
 
             animate_rotation(center, axis, angle, duration)
             invoke(end_animation, delay=duration + duration / 2)
+
+            idx += 1
 
     #Use user inputs
     if held_keys['tab']:
