@@ -135,7 +135,7 @@ def reverse_seq(seq: []):
 
     reverse = []
 
-    for arg in seq:
+    for arg in seq[::-1]:
         reverse.append(arg + "'")
 
     return reverse

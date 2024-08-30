@@ -137,21 +137,25 @@ def input(key):
             idx = len(r_seq) - 1
             if len(r_seq) > idx >= 0:
                 idx -= 1
+
+                in_animation = True
+
                 axis, layer, angle = rot_dict[r_seq[idx]]
                 apply_movement(axis, layer)
 
                 animate_rotation(center, axis, angle, duration)
-
                 invoke(end_animation, delay=duration + duration / 2)
 
     if held_keys["right arrow"] and len(seq) > 0:
         if idx < len(seq) - 1:
             idx += 1
+
+            in_animation = True
+
             axis, layer, angle = rot_dict[seq[idx]]
             apply_movement(axis, layer)
 
             animate_rotation(center, axis, angle, duration)
-
             invoke(end_animation, delay=duration + duration / 2)
 
     #Use user inputs
