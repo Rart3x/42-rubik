@@ -133,18 +133,14 @@ def input(key):
     #Use user inputs
     if held_keys['tab']:
         decompose_arr_args(args_g, seq)
-        r_seq_len_b = len(r_seq) - 1
-        r_seq = reverse_seq(seq)
-        r_seq_len_a = len(r_seq) - 1
+        reverse_seq_update()
         automatic_input(args_g)
 
     #Generate 100 random inputs
     if held_keys['space']:
         inputs = generate_input(100)
         decompose_arr_args(inputs, seq)
-        r_seq_len_b = len(r_seq) - 1
-        r_seq = reverse_seq(seq)
-        r_seq_len_a = len(r_seq) - 1
+        reverse_seq_update()
         automatic_input(inputs)
 
     if key not in rot_dict:
@@ -153,14 +149,23 @@ def input(key):
     #Register keyboard inputs
     seq.append(key)
 
-    r_seq_len_b = len(r_seq) - 1
-    r_seq = reverse_seq(seq)
-    r_seq_len_a = len(r_seq) - 1
+    reverse_seq_update()
 
     if r_seq_len_b < r_seq_len_a:
         idx = r_seq_len_a
 
     animation_sequence(key)
+
+
+def animate_rotation(center, axis, angle, duration):
+    """Animation rotation function, apply good animation depeeding on axis"""
+
+    if axis == 'x':
+        center.animate('rotation_x', angle, duration=duration)
+    elif axis == 'y':
+        center.animate('rotation_y', angle, duration=duration)
+    elif axis == 'z':
+        center.animate('rotation_z', angle, duration=duration)
 
 
 def animation_sequence(key):
@@ -176,17 +181,6 @@ def animation_sequence(key):
     animate_rotation(center, axis, angle, duration)
 
     invoke(end_animation, delay=duration + duration / 2)
-
-
-def animate_rotation(center, axis, angle, duration):
-    """Animation rotation function, apply good animation"""
-
-    if axis == 'x':
-        center.animate('rotation_x', angle, duration=duration)
-    elif axis == 'y':
-        center.animate('rotation_y', angle, duration=duration)
-    elif axis == 'z':
-        center.animate('rotation_z', angle, duration=duration)
 
 
 def end_animation():
@@ -219,6 +213,16 @@ def init():
     inputs = generate_input(50)
     # decompose_arr_args(inputs, seq)
     # automatic_input(inputs)
+
+
+def reverse_seq_update():
+    """Reverse sequence update function"""
+
+    global r_seq, r_seq_len_a, r_seq_len_b, idx
+
+    r_seq_len_b = len(r_seq) - 1
+    r_seq = reverse_seq(seq)
+    r_seq_len_a = len(r_seq) - 1
 
 
 def submit():
