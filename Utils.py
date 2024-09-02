@@ -91,11 +91,11 @@ def generate_input(i):
     """Generate I input to apply to the Rubik's Cube"""
 
     inputs_chars = [
-        "F", "R", "U", "B", "L", "D", "E", "M", "S",
-        "F2", "R2", "U2", "B2", "L2", "D2", "E2", "M2", "S2",
-        "F'", "R'", "U'", "B'", "L'", "D'", "E'", "M'", "S'"
+        "f", "r", "u", "b", "l", "d", "e", "m", "s",
+        "f2", "r2", "u2", "b2", "l2", "d2", "e2", "m2", "s2",
+        "f'", "r'", "u'", "b'", "l'", "d'", "e'", "m'", "s'"
     ]
-    
+
     random_chars = []
     
     for _ in range(i):
@@ -135,7 +135,10 @@ def reverse_seq(seq: []):
 
     reverse = []
 
-    for arg in seq[::-1]:
-        reverse.append(arg + "'")
+    for arg in seq:
+        if len(arg) == 1:
+            reverse.append(arg + "'")
+        else:
+            reverse.append(arg[0])
 
     return reverse

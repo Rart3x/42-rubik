@@ -8,6 +8,8 @@ from Rubik import Rubik
 from Utils import decompose_arr_args, expand_double_inputs, generate_input, reverse_seq
 
 idx = 0
+r_seq_len_a = 0
+r_seq_len_b = 0
 
 seq = []
 r_seq = []
@@ -65,25 +67,11 @@ def automatic_input(args):
         i = modified_args[index]
 
         if len(i) > 1 and not i[1].isdigit() and not in_animation:
-
-            in_animation = True
-
-            axis, layer, angle = rot_dict[i[0].lower() + i[1]]
-            apply_movement(axis, layer)
-
-            animate_rotation(center, axis, angle, duration)
-
+            animation_sequence(i[0].lower() + i[1])
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
 
         elif not in_animation:
-
-            in_animation = True
-
-            axis, layer, angle = rot_dict[i[0].lower()]
-            apply_movement(axis, layer)
-
-            animate_rotation(center, axis, angle, duration)
-
+            animation_sequence(i[0].lower())
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
 
     def process_next_input(prev_index):
@@ -122,7 +110,7 @@ def display(rubik: Rubik):
 def input(key):
     """Input keys function"""
 
-    global in_animation, idx, r_seq
+    global in_animation, idx, r_seq, r_seq_len_a, r_seq_len_b
 
     if held_keys['escape']:
         exit()
@@ -132,48 +120,31 @@ def input(key):
 
     # Navigate on normal/reverse movements with keyboard arrows
     if held_keys["left arrow"]:
-        r_seq = reverse_seq(seq)
         if len(r_seq) > 0 and idx - 1 >= -1:
-            idx = len(r_seq) - 1
             if len(r_seq) > idx >= 0:
-                print("Reverse SEQ idx  : " + str(idx))
-                print("Reverse SEQ idx : " + r_seq[idx])
-                print("Reverse SEQ : ", r_seq)
-                in_animation = True
-
-                axis, layer, angle = rot_dict[r_seq[idx]]
-                apply_movement(axis, layer)
-
-                animate_rotation(center, axis, angle, duration)
-                invoke(end_animation, delay=duration + duration / 2)
-
+                animation_sequence(r_seq[idx])
                 idx -= 1
 
     if held_keys["right arrow"] and len(seq) > 0:
         if idx < len(seq) - 1:
-            print("SEQ idx val : " + str(idx))
-            print("SEQ idx : " + seq[idx])
-            print("SEQ : ", seq)
-
-            in_animation = True
-
-            axis, layer, angle = rot_dict[seq[idx]]
-            apply_movement(axis, layer)
-
-            animate_rotation(center, axis, angle, duration)
-            invoke(end_animation, delay=duration + duration / 2)
-
+            animation_sequence(seq[idx])
             idx += 1
 
     #Use user inputs
     if held_keys['tab']:
-        seq.append(args_g)
+        decompose_arr_args(args_g, seq)
+        r_seq_len_b = len(r_seq) - 1
+        r_seq = reverse_seq(seq)
+        r_seq_len_a = len(r_seq) - 1
         automatic_input(args_g)
 
-    #Generate 1000 random inputs
+    #Generate 100 random inputs
     if held_keys['space']:
         inputs = generate_input(100)
         decompose_arr_args(inputs, seq)
+        r_seq_len_b = len(r_seq) - 1
+        r_seq = reverse_seq(seq)
+        r_seq_len_a = len(r_seq) - 1
         automatic_input(inputs)
 
     if key not in rot_dict:
@@ -181,6 +152,21 @@ def input(key):
 
     #Register keyboard inputs
     seq.append(key)
+
+    r_seq_len_b = len(r_seq) - 1
+    r_seq = reverse_seq(seq)
+    r_seq_len_a = len(r_seq) - 1
+
+    if r_seq_len_b < r_seq_len_a:
+        idx = r_seq_len_a
+
+    animation_sequence(key)
+
+
+def animation_sequence(key):
+    """Animation sequence function"""
+
+    global in_animation
 
     in_animation = True
 
