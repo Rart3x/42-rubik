@@ -136,16 +136,20 @@ def input(key):
 
     # Use user inputs
     if held_keys['tab']:
-        decompose_arr_args(args_g, seq)
-        reverse_seq_update()
-        automatic_input(args_g)
+        if args_g is not None:
+            decompose_arr_args(args_g, seq)
+            reverse_seq_update()
+            automatic_input(args_g)
+            idx = len(seq) - 1
 
     # Generate 100 random inputs
     if held_keys['space']:
         inputs = generate_input(100)
+        inputs = expand_double_inputs(inputs)
         decompose_arr_args(inputs, seq)
         reverse_seq_update()
         automatic_input(inputs)
+        idx = len(seq) - 1
 
     # Check if the key is in the dictionary
     if key not in rot_dict:
