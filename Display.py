@@ -127,8 +127,9 @@ def input(key):
 
     if held_keys["right arrow"] and len(seq) > 0:
         if idx < len(seq) - 1:
-            animation_sequence(seq[idx])
             idx += 1
+            animation_sequence(seq[idx])
+
 
     #Use user inputs
     if held_keys['tab']:
