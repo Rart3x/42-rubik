@@ -144,13 +144,13 @@ def input(key):
             automatic_input(args_g)
             idx = len(seq) - 1
 
-    # Generate 100 random inputs
+    # Generate 25 random inputs
     if held_keys['space']:
-        inputs = generate_input(100)
+        inputs = generate_input(25)
         inputs = expand_double_inputs(inputs)
-        decompose_arr_args(inputs, seq)
         if idx < len(seq) - 1:
             seq = insert_and_shift_arr(seq, idx, inputs)
+        decompose_arr_args(inputs, seq)
         reverse_seq_update()
         automatic_input(inputs)
         idx = len(seq) - 1
@@ -229,19 +229,14 @@ def init():
     EditorCamera()
 
     inputs = generate_input(50)
-    # decompose_arr_args(inputs, seq)
-    # automatic_input(inputs)
+    automatic_input(inputs)
 
 
 def insert_and_shift(seq, idx, key):
     """Insert and shift function"""
 
-    print(seq, "Before")
-
     del seq[idx + 1:]
     seq.insert(idx + 1, key)
-
-    print(seq, "After")
 
     return seq
 
@@ -249,8 +244,8 @@ def insert_and_shift(seq, idx, key):
 def insert_and_shift_arr(seq, idx, arr):
     """Insert and shift array function"""
 
+    decompose_arr_args(arr, seq)
     del seq[idx + 1:]
-    seq.insert(idx + 1, arr)
 
     return seq
 
