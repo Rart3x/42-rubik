@@ -55,6 +55,7 @@ def automatic_input(args):
     if args is None:
         return
 
+    # Expand double inputs
     modified_args = expand_double_inputs(args)
 
     def process_input(index):
@@ -66,14 +67,17 @@ def automatic_input(args):
 
         i = modified_args[index]
 
+        # Check if the input is an invert input (ex: f' or r')
         if len(i) > 1 and not i[1].isdigit() and not in_animation:
             animation_sequence(i[0].lower() + i[1])
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
 
+        # Check if the input is a normal input (ex: f or r)
         elif not in_animation:
             animation_sequence(i[0].lower())
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
 
+    # Process next input
     def process_next_input(prev_index):
 
         global in_animation
@@ -93,7 +97,7 @@ def display(rubik: Rubik):
 
     args_g = rubik.get_args()
 
-    #Create each Rubik's cube, each cube have every color on each faces, the Rubik's Cube is completed when created
+    # Create each Rubik's cube, each cube have every color on each faces, the Rubik's Cube is completed when created
     for position in product((-1, 0, 1), repeat=3):
         cubes.append(
             Entity(
@@ -110,7 +114,7 @@ def display(rubik: Rubik):
 def input(key):
     """Input keys function"""
 
-    global in_animation, idx, r_seq, r_seq_len_a, r_seq_len_b
+    global in_animation, idx, seq, r_seq, r_seq_len_a, r_seq_len_b
 
     if held_keys['escape']:
         exit()
@@ -130,25 +134,29 @@ def input(key):
             idx += 1
             animation_sequence(seq[idx])
 
-
-    #Use user inputs
+    # Use user inputs
     if held_keys['tab']:
         decompose_arr_args(args_g, seq)
         reverse_seq_update()
         automatic_input(args_g)
 
-    #Generate 100 random inputs
+    # Generate 100 random inputs
     if held_keys['space']:
         inputs = generate_input(100)
         decompose_arr_args(inputs, seq)
         reverse_seq_update()
         automatic_input(inputs)
 
+    # Check if the key is in the dictionary
     if key not in rot_dict:
         return
 
-    #Register keyboard inputs
-    seq.append(key)
+    # Register keyboard inputs
+    if idx < len(seq) - 1:
+        seq = insert_and_shift(seq, idx, key)
+        idx = len(seq) - 1
+    else:
+        seq.append(key)
 
     reverse_seq_update()
 
@@ -159,7 +167,7 @@ def input(key):
 
 
 def animate_rotation(center, axis, angle, duration):
-    """Animation rotation function, apply good animation depeeding on axis"""
+    """Animation rotation function, apply good animation depending on axis"""
 
     if axis == 'x':
         center.animate('rotation_x', angle, duration=duration)
@@ -176,6 +184,7 @@ def animation_sequence(key):
 
     in_animation = True
 
+    # Get the axis, layer and angle of the movement from the dictionary
     axis, layer, angle = rot_dict[key]
     apply_movement(axis, layer)
 
@@ -214,6 +223,15 @@ def init():
     inputs = generate_input(50)
     # decompose_arr_args(inputs, seq)
     # automatic_input(inputs)
+
+
+def insert_and_shift(seq, idx, key):
+    """Insert and shift function"""
+
+    del seq[idx + 1:]
+    seq.insert(idx + 1, key)
+
+    return seq
 
 
 def reverse_seq_update():
