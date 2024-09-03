@@ -137,6 +137,8 @@ def input(key):
     # Use user inputs
     if held_keys['tab']:
         if args_g is not None:
+            if idx < len(seq) - 1:
+                seq = insert_and_shift_arr(seq, idx, args_g)
             decompose_arr_args(args_g, seq)
             reverse_seq_update()
             automatic_input(args_g)
@@ -147,6 +149,8 @@ def input(key):
         inputs = generate_input(100)
         inputs = expand_double_inputs(inputs)
         decompose_arr_args(inputs, seq)
+        if idx < len(seq) - 1:
+            seq = insert_and_shift_arr(seq, idx, inputs)
         reverse_seq_update()
         automatic_input(inputs)
         idx = len(seq) - 1
@@ -232,8 +236,21 @@ def init():
 def insert_and_shift(seq, idx, key):
     """Insert and shift function"""
 
+    print(seq, "Before")
+
     del seq[idx + 1:]
     seq.insert(idx + 1, key)
+
+    print(seq, "After")
+
+    return seq
+
+
+def insert_and_shift_arr(seq, idx, arr):
+    """Insert and shift array function"""
+
+    del seq[idx + 1:]
+    seq.insert(idx + 1, arr)
 
     return seq
 
@@ -251,6 +268,8 @@ def reverse_seq_update():
 def submit():
     """Submit method for mixing generator in frontend"""
 
+    global idx, seq
+
     input_text = nbr_field.text
     input_integer = int(input_text)
 
@@ -260,5 +279,8 @@ def submit():
         return
 
     inputs = generate_input(input_integer)
+    inputs = expand_double_inputs(inputs)
     decompose_arr_args(inputs, seq)
+    reverse_seq_update()
     automatic_input(inputs)
+    idx = len(seq) - 1
