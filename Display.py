@@ -5,29 +5,47 @@ from itertools import product
 from ursina import *
 
 from Rubik import Rubik
-from Utils import decompose_arr_args, expand_double_inputs, generate_input, reverse_seq
-
-idx = 0
-r_seq_len_a = 0
-r_seq_len_b = 0
-
-seq = []
-r_seq = []
-
-cubes = []
+from Utils import decompose_arr_args, expand_double_inputs, generate_input, insert_and_shift, insert_and_shift_arr, reverse_seq
 
 duration = 0.1
-
 in_animation = False
+idx, r_seq_len_a, r_seq_len_b = 0, 0, 0
+cubes, r_seq, seq = [], [], []
 
-rot_dict = {'f': ['z', -1, 90], 'r': ['x', 1, 90], 'u': ['y', 1, 90],
-            'b': ['z', 1, -90], 'l': ['x', -1, -90], 'd': ['y', -1, -90],
-            'e': ['y', 0, -90], 'm': ['x', 0, -90], 's': ['z', 0, 90],
+rot_dict = {
+    'f': ['z', -1, 90],     'r': ['x', 1, 90],      'u': ['y', 1, 90],
+    'b': ['z', 1, -90],     'l': ['x', -1, -90],    'd': ['y', -1, -90],
+    'e': ['y', 0, -90],     'm': ['x', 0, -90],     's': ['z', 0, 90],
 
-            'f\'': ['z', -1, -90], 'r\'': ['x', 1, -90], 'u\'': ['y', 1, -90],
-            'b\'': ['z', 1, 90], 'l\'': ['x', -1, 90], 'd\'': ['y', -1, 90],
-            'e\'': ['y', 0, 90], 'm\'': ['x', 0, 90], 's\'': ['z', 0, -90]
-            }
+    'f\'': ['z', -1, -90],  'r\'': ['x', 1, -90],   'u\'': ['y', 1, -90],
+    'b\'': ['z', 1, 90],    'l\'': ['x', -1, 90],   'd\'': ['y', -1, 90],
+    'e\'': ['y', 0, 90],    'm\'': ['x', 0, 90],    's\'': ['z', 0, -90]
+}
+
+
+def animate_rotation(center, axis, angle, duration):
+    """Animation rotation function, apply good animation depending on axis"""
+
+    if axis == 'x':
+        center.animate('rotation_x', angle, duration=duration)
+    elif axis == 'y':
+        center.animate('rotation_y', angle, duration=duration)
+    elif axis == 'z':
+        center.animate('rotation_z', angle, duration=duration)
+
+
+def animation_sequence(key):
+    """Animation sequence function"""
+
+    global in_animation
+
+    in_animation = True
+
+    # Get the axis, layer and angle of the movement from the dictionary
+    axis, layer, angle = rot_dict[key]
+    apply_movement(axis, layer)
+    animate_rotation(center, axis, angle, duration)
+    invoke(end_animation, delay=duration + duration / 2)
 
 
 def apply_movement(axis, layer):
@@ -81,8 +99,8 @@ def automatic_input(args):
     def process_next_input(prev_index):
 
         global in_animation
-        in_animation = False
 
+        in_animation = False
         process_input(prev_index + 1)
 
     process_input(0)
@@ -109,6 +127,39 @@ def display(rubik: Rubik):
         )
 
     app.run()
+
+
+def end_animation():
+    """End animation function, pass in_animation to False after duration time"""
+
+    global in_animation
+    in_animation = False
+
+
+def init():
+    """Init function"""
+
+    global app, center, nbr_field
+
+    app = Ursina(development_mode=False, title="Rubik")
+    center = Entity()
+    root = tkinter.Tk()
+
+    nbr_field = InputField(y=-.35, limit_content_to='0123456789', active=True)
+
+    Button(text='Mixing', scale=.1, color=color.cyan.tint(-.4), x=0.30, y=-.35, on_click=submit).fit_to_text()
+
+    w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+
+    window.size = (w / 2, h / 2)
+    window.position = (w / 4, h / 4)
+
+    EditorCamera()
+
+    inputs = generate_input(50)
+    automatic_input(inputs)
+
+    return inputs
 
 
 def input(key):
@@ -172,82 +223,6 @@ def input(key):
         idx = r_seq_len_a
 
     animation_sequence(key)
-
-
-def animate_rotation(center, axis, angle, duration):
-    """Animation rotation function, apply good animation depending on axis"""
-
-    if axis == 'x':
-        center.animate('rotation_x', angle, duration=duration)
-    elif axis == 'y':
-        center.animate('rotation_y', angle, duration=duration)
-    elif axis == 'z':
-        center.animate('rotation_z', angle, duration=duration)
-
-
-def animation_sequence(key):
-    """Animation sequence function"""
-
-    global in_animation
-
-    in_animation = True
-
-    # Get the axis, layer and angle of the movement from the dictionary
-    axis, layer, angle = rot_dict[key]
-    apply_movement(axis, layer)
-
-    animate_rotation(center, axis, angle, duration)
-
-    invoke(end_animation, delay=duration + duration / 2)
-
-
-def end_animation():
-    """End animation function, pass in_animation to False after duration time"""
-
-    global in_animation
-    in_animation = False
-
-
-def init():
-    """Init function"""
-
-    global app, center, nbr_field
-
-    app = Ursina(development_mode=False, title="Rubik")
-    center = Entity()
-    root = tkinter.Tk()
-
-    nbr_field = InputField(y=-.35, limit_content_to='0123456789', active=True)
-
-    Button(text='Mixing', scale=.1, color=color.cyan.tint(-.4), x=0.30, y=-.35, on_click=submit).fit_to_text()
-
-    w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-
-    window.size = (w / 2, h / 2)
-    window.position = (w / 4, h / 4)
-
-    EditorCamera()
-
-    # inputs = generate_input(50)
-    # automatic_input(inputs)
-
-
-def insert_and_shift(seq, idx, key):
-    """Insert and shift function"""
-
-    del seq[idx + 1:]
-    seq.insert(idx + 1, key)
-
-    return seq
-
-
-def insert_and_shift_arr(seq, idx, arr):
-    """Insert and shift array function"""
-
-    decompose_arr_args(arr, seq)
-    del seq[idx + 1:]
-
-    return seq
 
 
 def reverse_seq_update():

@@ -130,6 +130,24 @@ def is_spaced(args):
     return True
 
 
+def insert_and_shift(seq, idx, key):
+    """Insert and shift function"""
+
+    del seq[idx + 1:]
+    seq.insert(idx + 1, key)
+
+    return seq
+
+
+def insert_and_shift_arr(seq, idx, arr):
+    """Insert and shift array function"""
+
+    decompose_arr_args(arr, seq)
+    del seq[idx + 1:]
+
+    return seq
+
+
 def reverse_seq(seq: []):
     """Reverse a sequence of movements"""
 
