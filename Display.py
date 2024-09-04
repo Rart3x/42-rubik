@@ -228,8 +228,8 @@ def init():
 
     EditorCamera()
 
-    inputs = generate_input(50)
-    automatic_input(inputs)
+    # inputs = generate_input(50)
+    # automatic_input(inputs)
 
 
 def insert_and_shift(seq, idx, key):
@@ -272,9 +272,10 @@ def submit():
 
     if input_integer > 1000:
         return
-
     inputs = generate_input(input_integer)
     inputs = expand_double_inputs(inputs)
+    if idx < len(seq) - 1:
+        seq = insert_and_shift_arr(seq, idx, args_g)
     decompose_arr_args(inputs, seq)
     reverse_seq_update()
     automatic_input(inputs)
