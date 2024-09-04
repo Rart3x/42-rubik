@@ -241,6 +241,8 @@ def submit():
     global idx, seq
 
     input_text = nbr_field.text
+    if not input_text.isdigit():
+        return
     input_integer = int(input_text)
 
     nbr_field.text = ""
