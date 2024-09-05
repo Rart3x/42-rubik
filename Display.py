@@ -1,5 +1,6 @@
 import tkinter
 import os
+from email.policy import default
 
 from itertools import product
 from ursina import *
@@ -8,9 +9,10 @@ from Rubik import Rubik
 from Utils import decompose_arr_args, expand_double_inputs, generate_input, insert_and_shift, insert_and_shift_arr, reverse_seq
 
 duration = 0.1
-in_animation = False
+help_bool, in_animation = False, False
 idx, r_seq_len_a, r_seq_len_b = 0, 0, 0
 cubes, r_seq, seq = [], [], []
+text0, text1, text2, text3, text4, text5 = None, None, None, None, None, None
 
 rot_dict = {
     'f': ['z', -1, 90],     'r': ['x', 1, 90],      'u': ['y', 1, 90],
@@ -136,10 +138,32 @@ def end_animation():
     in_animation = False
 
 
+def help():
+    """Help function"""
+
+    global help_bool, text0, text1, text2, text3, text4, text5
+
+    help_bool = not help_bool
+
+    if help_bool:
+        text0.enabled = False
+        text1.enabled = True
+        text2.enabled = True
+        text3.enabled = True
+        text4.enabled = True
+        text5.enabled = True
+    else:
+        text0.enabled = True
+        text1.enabled = False
+        text2.enabled = False
+        text3.enabled = False
+        text4.enabled = False
+        text5.enabled = False
+
 def init():
     """Init function"""
 
-    global app, center, nbr_field
+    global app, center, nbr_field, text0, text1, text2, text3, text4, text5
 
     app = Ursina(development_mode=False, title="Rubik")
     center = Entity()
@@ -147,7 +171,15 @@ def init():
 
     nbr_field = InputField(y=-.35, limit_content_to='0123456789', active=True)
 
+    # Create a button to submit the number of movements to mix the cube
     Button(text='Mixing', scale=.1, color=color.cyan.tint(-.4), x=0.30, y=-.35, on_click=submit).fit_to_text()
+
+    text0 = Text(text='Press 1 to see help menu', y=0.3, x=-0.8, scale=1.5, enabled=True)
+    text1 = Text(text='ESC to exit', y=0.3, x=-0.8, scale=1.5, enabled=False)
+    text2 = Text(text='TAB to play user inputs', y=0.15, x=-0.8, scale=1.5, enabled=False)
+    text3 = Text(text='SPACE to generate 25 random inputs', y=0, x=-0.8, scale=1.5, enabled=False)
+    text4 = Text(text='LEFT ARROW to navigate on reverse movements', y=-0.15, x=-0.8, scale=1.5, enabled=False)
+    text5 = Text(text='RIGHT ARROW to navigate on normal movements', y=-0.3, x=-0.8, scale=1.5, enabled=False)
 
     w, h = root.winfo_screenwidth(), root.winfo_screenheight()
 
@@ -169,6 +201,8 @@ def input(key):
 
     if held_keys['escape']:
         exit()
+    if held_keys['1']:
+        help()
 
     if in_animation:
         return
