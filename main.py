@@ -12,7 +12,6 @@ def main() -> int:
     rubik = Rubik()
 
     if os.path.exists("./models_compressed/"):
-        os.remove("./models_compressed/cube.bam")
         os.rmdir("./models_compressed")
 
     try:
