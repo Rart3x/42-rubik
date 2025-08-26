@@ -7,6 +7,9 @@ def check_args_validity(ac, av):
     
     if ac > 2:
         raise ValueError("Error: Invalid number of arguments")
+    if not check_textures():
+        raise ValueError("Error: Missing textures")
+
     if ac < 2:
         return
 
@@ -19,8 +22,6 @@ def check_args_validity(ac, av):
         raise ValueError("Error: Invalid pattern in arguments")
     if not is_spaced(args):
         raise ValueError("Error: Invalid spacing in arguments")
-#     if not check_textures():
-#         raise ValueError("Error: Missing textures")
 
     return args
 
@@ -29,7 +30,7 @@ def check_textures():
     """CheckTextures function"""
 
     textures = {
-        "textures/"
+        "textures/",
         "textures/cube.png",
         "textures/cube.obj"
     }
@@ -37,6 +38,7 @@ def check_textures():
     for texture in textures:
         if not os.path.exists(texture):
             return False
+    return True
 
 
 def check_splitted_args(args):
