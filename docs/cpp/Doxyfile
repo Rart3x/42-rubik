@@ -2,18 +2,16 @@
 PROJECT_NAME           = "YourProject (C++ API)"
 PROJECT_NUMBER         = 0.1.0
 
-# Local default output (for running doxygen locally).
-# In CI we'll override OUTPUT_DIRECTORY to "site/cpp".
+# We override OUTPUT_DIRECTORY to "site/cpp".
 OUTPUT_DIRECTORY       = docs/_build/cpp
 
-# Put the HTML files directly under OUTPUT_DIRECTORY (so CI ends up with site/cpp/index.html)
+# Put the HTML files directly under OUTPUT_DIRECTORY
 HTML_OUTPUT            = .
 GENERATE_HTML          = YES
 GENERATE_LATEX         = NO
 GENERATE_XML           = NO
 
 # ---------- Inputs ----------
-# Point this to your actual C++ source/include roots
 INPUT                  = include src
 FILE_PATTERNS          = *.h *.hpp *.hh *.ipp *.c *.cc *.cpp *.cxx
 RECURSIVE              = YES
@@ -27,8 +25,8 @@ FULL_PATH_NAMES        = NO
 STRIP_FROM_PATH        = .
 
 # ---------- Extraction & style ----------
-EXTRACT_ALL            = YES           # document even if no comments yet
-EXTRACT_PRIVATE        = NO            # flip to YES if you want private members
+EXTRACT_ALL            = YES    # document even if no comments yet
+EXTRACT_PRIVATE        = NO     # flip to YES if you want private members
 EXTRACT_STATIC         = YES
 JAVADOC_AUTOBRIEF      = YES
 MULTILINE_CPP_IS_BRIEF = YES
@@ -45,8 +43,6 @@ WARN_AS_ERROR          = NO
 
 # ---------- Markdown/README ----------
 MARKDOWN_SUPPORT       = YES
-# Point this at your README if you want it as the landing page
-USE_MDFILE_AS_MAINPAGE = README.md
 
 # ---------- Graphs/diagrams (needs graphviz) ----------
 HAVE_DOT               = YES

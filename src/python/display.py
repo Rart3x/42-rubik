@@ -4,8 +4,8 @@ from email.policy import default
 from itertools import product
 from ursina import *
 
-from Rubik import Rubik
-from Utils import decompose_arr_args, expand_double_inputs, generate_input, insert_and_shift, insert_and_shift_arr, reverse_seq
+from rubik import Rubik
+from utils import decompose_arr_args, expand_double_inputs, generate_input, insert_and_shift, insert_and_shift_arr, reverse_seq
 
 
 cubes = []

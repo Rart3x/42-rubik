@@ -1,9 +1,9 @@
 import os
 import sys
 
-from Display import *
-from Rubik import *
-from Utils import *
+from display import *
+from rubik import *
+from utils import *
 
 
 def main() -> int:
