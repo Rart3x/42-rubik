@@ -1,4 +1,8 @@
 .vscode
-
-/__pycache__
+.idea
+.build
+.venv
+*/__pycache__
 /models_compressed
+rubik
+*/rubik
