@@ -12,6 +12,24 @@ from display import build_scene
 
 
 def ensure_solver_built(exe="../cpp/rubik", make_dir="../cpp", target=None, timeout=300, quiet=False):
+    """
+    Ensure that the C++ solver executable is built using `make`.
+    If the executable does not exist or is out of date, this function will
+    invoke `make` in the specified directory to build it.
+
+    @param exe: Path to the expected executable.
+    @type exe: str
+    @param make_dir: Directory containing the Makefile.
+    @type make_dir: str
+    @param target: Make target to build. If None, defaults to the executable name.
+    @type target: str or None
+    @param timeout: Maximum time to wait for the build process, in seconds.
+    @type timeout: int
+    @param quiet: If True, suppresses output from the build process unless there is an error.
+    @type quiet: bool
+
+    @return: None
+    """
     exe = Path(exe)
     make_dir = Path(make_dir)
     target = target or exe.name
