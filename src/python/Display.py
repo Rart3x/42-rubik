@@ -27,7 +27,16 @@ rot_dict = { 'f': ['z', -1, 90],  'r': ['x', 1, 90],     'u': ['y', 1, 90],
 
 
 def apply_movement(axis, layer):
-    '''Apply movement function'''
+    """
+    Apply movement function
+    Move the cubes to the center entity if they are in the layer to be rotated
+    and set their parent to the center entity
+
+    @param axis: axis of rotation
+    @param layer: layer to be rotated
+
+    @return: None
+    """
 
     global cubes
 
