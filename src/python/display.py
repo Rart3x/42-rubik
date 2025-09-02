@@ -1,14 +1,16 @@
+from itertools import product
 import tkinter
 
-from email.policy import default
-from itertools import product
-from ursina import *
+from ursina import Entity, Button, InputField, EditorCamera, color, scene, window, held_keys, invoke
 
 from rubik import Rubik
 from utils import decompose_arr_args, expand_double_inputs, generate_input, insert_and_shift, insert_and_shift_arr, reverse_seq
 
 
-cubes = []
+center = None
+nbr_field = None
+args_g = None
+
 duration = 0.3
 in_animation = False
 
@@ -24,6 +26,51 @@ rot_dict = { 'f': ['z', -1, 90],  'r': ['x', 1, 90],     'u': ['y', 1, 90],
             'b\'': ['z', 1, 90],  'l\'': ['x', -1, 90],  'd\'': ['y', -1, 90],
             'e\'': ['y', 0, 90],  'm\'': ['x', 0, 90],   's\'': ['z', 0, -90]
 }
+
+def build_scene(rubik: Rubik):
+    """
+    Must be called AFTER the Ursina() app has been created in main.
+    Builds UI, the cube entities, and sets up input handlers.
+    """
+    _setup_ui()
+
+    # prime rubik with initial randomized state
+    inputs = generate_input(10)
+    rubik.set_mixed_cube(inputs)
+    global args_g
+    args_g = rubik.get_args()
+
+    # build the 3x3x3 cubelets
+    for position in product((-1, 0, 1), repeat=3):
+        cubes.append(
+            Entity(
+                model='textures/cube.obj',
+                texture='textures/cube.png',
+                position=position,
+                scale=0.5
+            )
+        )
+
+def _setup_ui():
+    global center, nbr_field
+
+    center = Entity()
+    nbr_field = InputField(y=-.35, limit_content_to='0123456789', active=True)
+
+    Button(
+        text='Mixing', scale=.1, color=color.cyan.tint(-.4),
+        x=0.30, y=-.35, on_click=submit
+    ).fit_to_text()
+
+    # Use Tk to query screen size; hide/destroy the Tk window to avoid a ghost window
+    root = tkinter.Tk(); root.withdraw()
+    w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+    root.destroy()
+
+    window.size = (w / 2, h / 2)
+    window.position = (w / 4, h / 4)
+
+    EditorCamera()
 
 
 def apply_movement(axis, layer):
@@ -113,51 +160,6 @@ def automatic_input(args):
         process_input(prev_index + 1)
 
     process_input(0)
-
-
-def display(rubik: Rubik):
-    '''Display 3D Rubik's Cube, manipulating Blender Object'''
-
-    global args_g, app
-
-    rubik.set_mixed_cube(init())
-    args_g = rubik.get_args()
-
-    for position in product((-1, 0, 1), repeat=3):
-        cubes.append(
-            Entity(
-                model='textures/cube.obj',
-                texture='textures/cube.png',
-                position=position,
-                scale=0.5
-            )
-        )
-
-    app.run()
-
-
-def init():
-    """Init function"""
-
-    global app, center, nbr_field
-
-    app = Ursina(development_mode=False, title="Rubik")
-    center = Entity()
-    inputs = generate_input(10)
-    nbr_field = InputField(y=-.35, limit_content_to='0123456789', active=True)
-    root = tkinter.Tk()
-
-    # Create a button to submit the number of movements to mix the cube
-    Button(text='Mixing', scale=.1, color=color.cyan.tint(-.4), x=0.30, y=-.35, on_click=submit).fit_to_text()
-
-    w, h = root.winfo_screenwidth(), root.winfo_screenheight()
-
-    window.size = (w / 2, h / 2)
-    window.position = (w / 4, h / 4)
-
-    EditorCamera()
-
-    return inputs
 
 
 def input(key):

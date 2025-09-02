@@ -1,5 +1,6 @@
 import os
 import random
+from pathlib import Path
 
 
 def check_args_validity(ac, av):
@@ -29,10 +30,12 @@ def check_args_validity(ac, av):
 def check_textures():
     """CheckTextures function"""
 
+    file_path = Path(__file__).resolve().parent
+
     textures = {
-        "textures/",
-        "textures/cube.png",
-        "textures/cube.obj"
+        file_path / "textures",
+        file_path / "textures/cube.png",
+        file_path / "textures/cube.obj"
     }
 
     for texture in textures:
