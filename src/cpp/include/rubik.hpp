@@ -8,9 +8,7 @@
 #ifndef CPP_MAIN_HPP
 #define CPP_MAIN_HPP
 
-
-class main {
-};
+#include <iostream>
 
 
-#endif //CPP_MAIN_HPP
+#endif
