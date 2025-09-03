@@ -6,6 +6,7 @@ from shutil import which, rmtree
 
 from rubik import Rubik
 from utils import *
+from Solver import Solver
 
 from ursina import Ursina
 from display import build_scene
@@ -79,13 +80,27 @@ def main() -> int:
     rubik = Rubik()
 
     try:
+
+        moves = "U R B L D2 F U' R' B' L' D' F'"  # Placeholder for testing without GUI
+        solver = Solver(exe_str)
+        solution = solver.solve(moves)
+        for m in solution:
+            print(m, end=" | ")
+        moves2 = "wefewfw"  # Placeholder for testing without GUI (ERROR testing)
+        solution2 = solver.solve(moves2)
+        for m in solution2:
+            print(m, end=" | ")
+        solver.close()
+
+
         rubik.set_args(check_args_validity(len(sys.argv), sys.argv))
         app = Ursina(development_mode=False, title="Rubik")
         build_scene(rubik)
         app.run()
 
-    except ValueError as e:
+    except Exception as e:
         print("\033[31m", e, "\033[30m")
+        return 1
 
     return 0
 

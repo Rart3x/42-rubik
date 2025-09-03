@@ -25,12 +25,12 @@ bool isValidInput(const std::string& input) {
     for(size_t i = 0; i < input.size(); ++i) {
         char c = input[i];
         if(c != ' ' && c != '\'' && c != '2' && validChars.find(c) == std::string::npos) {
-            std::cerr << "Invalid character in input: " << c << std::endl;
+            std::cout << "ERROR: Invalid character in input: " << c << std::endl;
             return false;
         }
 		if (c == '\'' || c == '2') {
 			if (i == 0 || validChars.find(input[i - 1]) == std::string::npos) {
-                std::cerr << "Invalid modifier position: " << c << std::endl;
+                std::cerr << "ERROR: Invalid modifier position: " << c << std::endl;
                 return false;
 			}
 		}
@@ -48,7 +48,6 @@ bool isValidInput(const std::string& input) {
  *  @return Exit status.
  */
 int main(int argc, char** argv) {
-    std::cout << "Hello, Rubik!" << std::endl;
 	std::string entry;
 
     bool continuous = false;
