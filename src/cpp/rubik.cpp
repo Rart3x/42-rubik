@@ -6,6 +6,7 @@
  */
 
 #include "rubik.hpp"
+#include "cube.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -59,7 +60,8 @@ int main(int argc, char** argv) {
                       << "  -h, --help         Display this help message.\n"
 					  << "  mixing_sequence    A sequence of moves to solve (e.g., \"U R U' L' D2 F B'\").\n";
             return 0;
-        } else if (arg == "-c" || arg == "--continuous") {
+        }
+    	if (arg == "-c" || arg == "--continuous") {
             continuous = true;
         } else if (entry.empty()) {
             entry = arg;
@@ -76,10 +78,8 @@ int main(int argc, char** argv) {
 		if (!isValidInput(entry)) {
             if (!continuous)
                 break;
-            else {
-				entry.clear();
-                continue;
-			}
+			entry.clear();
+			continue;
         }
         // auto moves = Solve(entry);
 		std::vector moves = {"U", "R", "U'", "L'", "D", "F", "B'"}; // Placeholder for actual moves
