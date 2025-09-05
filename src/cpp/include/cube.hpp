@@ -25,12 +25,17 @@
  *  Edge indices (0..11):
  *  0 UR, 1 UF, 2 UL, 3 UB, 4 DR, 5 DF, 6 DL, 7 DB, 8 FR, 9 FL, 10 BL, 11 BR
  *  E-slice edges are 8..11: FR, FL, BL, BR
+ *
+ *  @param cp Corner permutation array.
+ *  @param co Corner orientation array (0..2).
+ *  @param ep Edge permutation array.
+ *  @param eo Edge orientation array (0..1).
  */
 struct Cube {
-    std::array<uint8_t,8> cp{};     ///< corner permutation
-    std::array<uint8_t,8> co{};     ///< corner orientation (0..2)
-    std::array<uint8_t,12> ep{};    ///< edge permutation
-    std::array<uint8_t,12> eo{};    ///< edge orientation (0..1)
+    std::array<uint8_t,8> cp{};
+    std::array<uint8_t,8> co{};
+    std::array<uint8_t,12> ep{};
+    std::array<uint8_t,12> eo{};
 };
 
 ///< @brief Enumeration of possible moves on a Rubik's Cube.
