@@ -27,24 +27,17 @@ static const int MOVE_N = 18;       ///< Number of possible moves
  *
  * This struct contains arrays that represent the results of applying each possible move
  * to various cube states, both for phase 1 and phase 2 of the solving algorithm
- *
- * @param twistMove Twist state after each move from any twist state (0..2186).
- * @param flipMove Flip state after each move from any flip state (0..2047).
- * @param sliceMove Slice state after each move from any slice state (0..494).
- * @param cpermMove Corner permutation after each move from any corner permutation (0..40319).
- * @param epermUDMove Edge permutation of UD-slice edges after each move from any edge permutation (0..40319).
- * @param epermEMove Edge permutation of E-slice edges after each move from any edge permutation (0..23).
  */
 struct CoordTables {
     // Phase 1
-    std::array<std::array<uint16_t, MOVE_N>, TWIST_N> twistMove{};
-    std::array<std::array<uint16_t, MOVE_N>, FLIP_N>  flipMove{};
-    std::array<std::array<uint16_t, MOVE_N>, SLICE_N> sliceMove{};
+    std::array<std::array<uint16_t, MOVE_N>, TWIST_N> twistMove{};  ///< Twist state after each move from any twist state (0..2186).
+    std::array<std::array<uint16_t, MOVE_N>, FLIP_N>  flipMove{};   ///< Flip state after each move from any flip state (0..2047).
+    std::array<std::array<uint16_t, MOVE_N>, SLICE_N> sliceMove{};  ///< Slice state after each move from any slice state (0..494).
 
     // Phase 2
-    std::array<std::array<uint16_t, MOVE_N>, FACT8> cpermMove{};
-    std::array<std::array<uint16_t, MOVE_N>, FACT8> epermUDMove{};
-    std::array<std::array<uint8_t , MOVE_N>, FACT4> epermEMove{};
+    std::array<std::array<uint16_t, MOVE_N>, FACT8> cpermMove{};    ///< Corner permutation after each move from any corner permutation (0..40319).
+    std::array<std::array<uint16_t, MOVE_N>, FACT8> epermUDMove{};  ///< Edge permutation of UD-slice edges after each move from any edge permutation (0..40319).
+    std::array<std::array<uint8_t , MOVE_N>, FACT4> epermEMove{};   ///< Edge permutation of E-slice edges after each move from any edge permutation (0..23).
 };
 
 

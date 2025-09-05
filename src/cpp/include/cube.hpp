@@ -25,20 +25,15 @@
  *  Edge indices (0..11):
  *  0 UR, 1 UF, 2 UL, 3 UB, 4 DR, 5 DF, 6 DL, 7 DB, 8 FR, 9 FL, 10 BL, 11 BR
  *  E-slice edges are 8..11: FR, FL, BL, BR
- *
- *  @param cp Corner permutation array.
- *  @param co Corner orientation array (0..2).
- *  @param ep Edge permutation array.
- *  @param eo Edge orientation array (0..1).
  */
 struct Cube {
-    std::array<uint8_t,8> cp{};
-    std::array<uint8_t,8> co{};
-    std::array<uint8_t,12> ep{};
-    std::array<uint8_t,12> eo{};
+    std::array<uint8_t,8> cp{};     ///< Corner permutation array.
+    std::array<uint8_t,8> co{};     ///< Corner orientation array (0..2).
+    std::array<uint8_t,12> ep{};    ///< Edge permutation array.
+    std::array<uint8_t,12> eo{};    ///< Edge orientation array (0..1).
 };
 
-///< @brief Enumeration of possible moves on a Rubik's Cube.
+
 enum Move : uint8_t {
     U, U2, Up,
     R, R2, Rp,
@@ -47,9 +42,9 @@ enum Move : uint8_t {
     L, L2, Lp,
     B, B2, Bp,
     MOVE_N = 18
-};
+}; ///< @brief Enumeration of possible moves on a Rubik's Cube.
 
-///< @brief String representations of the moves.
+
 static const char* MOVE_STR[MOVE_N] = {
     "U", "U2", "U'",
     "R", "R2", "R'",
@@ -57,7 +52,7 @@ static const char* MOVE_STR[MOVE_N] = {
     "D", "D2", "D'",
     "L", "L2", "L'",
     "B", "B2", "B'"
-};
+}; ///< @brief String representations of the moves.
 
 
 Cube    get_solved_cube();              ///< @brief Returns a solved Cube.
