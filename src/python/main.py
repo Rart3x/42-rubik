@@ -9,7 +9,7 @@ from utils import *
 from Solver import Solver
 
 from ursina import Ursina
-from display import build_scene
+from display import *
 
 
 def ensure_solver_built(exe="../cpp/rubik", make_dir="../cpp", target=None, timeout=300, quiet=False):
@@ -80,7 +80,6 @@ def main() -> int:
     rubik = Rubik()
 
     try:
-
         moves = "U R B L D2 F U' R' B' L' D' F'"  # Placeholder for testing without GUI
         solver = Solver(exe_str)
         solution = solver.solve(moves)
@@ -91,7 +90,6 @@ def main() -> int:
         for m in solution2:
             print(m, end=" | ")
         solver.close()
-
 
         rubik.set_args(check_args_validity(len(sys.argv), sys.argv))
         app = Ursina(development_mode=False, title="Rubik")
