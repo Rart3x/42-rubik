@@ -7,6 +7,7 @@
  */
 
 #include "cube.hpp"
+#include <stdexcept>
 
 Cube get_solved_cube() {
     Cube c;
@@ -154,4 +155,41 @@ void apply_move(Cube &c, Move m) {
         case B:  Bq(c); break;  case B2: Bq(c); Bq(c); break;   case Bp: Bq(c); Bq(c); Bq(c); break;
         default: break;
     }
+}
+
+std::vector<Move> parse_moves(const std::string& moves) {
+    std::vector<Move> result;
+    size_t i = 0;
+    while (i < moves.size()) {
+        if (moves[i] == ' ') {
+            i++;
+            continue;
+        }
+        std::string move_str;
+        move_str += moves[i++];
+        if (i < moves.size() && (moves[i] == '2' || moves[i] == '\'')) {
+            move_str += moves[i++];
+        }
+        bool found = false;
+        for (int m = 0; m < MOVE_N; m++) {
+            if (move_str == MOVE_STR[m]) {
+                result.push_back(static_cast<Move>(m));
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            throw std::invalid_argument("Invalid move: " + move_str);
+        }
+    }
+    return result;
+}
+
+Cube get_mixed_cube(const std::string& moves) {
+    const std::vector<Move> moves_list = parse_moves(moves);
+    Cube c = get_solved_cube();
+    for (const Move m : moves_list) {
+        apply_move(c, m);
+    }
+    return c;
 }
