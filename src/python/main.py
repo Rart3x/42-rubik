@@ -86,10 +86,10 @@ def main() -> int:
         for m in solution:
             print(m, end=" | ")
         moves2 = "wefewfw"  # Placeholder for testing without GUI (ERROR testing)
-        solution2 = solver.solve(moves2)
-        for m in solution2:
-            print(m, end=" | ")
-        solver.close()
+        # solution2 = solver.solve(moves2)
+        # for m in solution2:
+        #     print(m, end=" | ")
+        # solver.close()
 
         rubik.set_args(check_args_validity(len(sys.argv), sys.argv))
         app = Ursina(development_mode=False, title="Rubik")
