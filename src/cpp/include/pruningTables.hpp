@@ -14,6 +14,16 @@
 #include "coordsTables.hpp"
 #include "cube.hpp"
 
+
+/**
+ * @struct DepthTable
+ * @brief A simple depth table for storing depth information for pruning.
+ *
+ * This struct represents a depth table used in pruning algorithms for Rubik's Cube solving.
+ * It contains a vector of 8-bit unsigned integers to store depth values and provides methods
+ * to get and set these values. The table is initialized with a specified size, and unvisited
+ * entries are marked with 0xFF.
+ */
 struct DepthTable { // 0xFF = unvisited
     std::vector<uint8_t> a;
     int N;
