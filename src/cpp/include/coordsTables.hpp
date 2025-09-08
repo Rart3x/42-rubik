@@ -41,4 +41,25 @@ struct CoordTables {
 };
 
 
+/**
+ * @brief Builds all coordinate move tables.
+ *
+ * This function constructs the complete set of coordinate move tables for
+ * both phase 1 and phase 2 of the Rubik's Cube solving algorithm. It calls
+ * individual functions to build each specific table and aggregates them
+ * into a single CoordTables struct.
+ *
+ * @return A CoordTables struct containing all precomputed move tables.
+ */
+CoordTables build_coords_tables();
+
+
+int twist_index(const Cube& c);
+int flip_index(const Cube& c);
+int slice_index(const Cube& c);
+int cperm_index(const Cube& c);
+int epermUD_index(const Cube& c);
+int epermE_index(const Cube& c);
+
+
 #endif

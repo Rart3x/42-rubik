@@ -3,6 +3,7 @@ NAME			:=	rubik
 SRC				:=	rubik.cpp \
 					cube.cpp \
 					coordsTables.cpp \
+					pruningTables.cpp \
 
 SRC_OBJS		:=	$(SRC:%.cpp=.build/%.o)
 DEPS			:=	$(SRC_OBJS:%.o=%.d)

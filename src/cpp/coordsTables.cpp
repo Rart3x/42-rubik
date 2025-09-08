@@ -23,7 +23,7 @@
  * @param c The cube state.
  * @return The twist index (0 to 2186).
  */
-static int twist_index(const Cube& c) {
+int twist_index(const Cube& c) {
     int idx = 0;
     int sum = 0;
     for(int i = 0; i < 7; i++) {
@@ -106,7 +106,7 @@ static std::array<std::array<uint16_t, MOVE_N>, TWIST_N> build_twist_moves(){
  * @param c The cube state.
  * @return The flip index (0 to 2047).
  */
-static int flip_index(const Cube& c) {
+int flip_index(const Cube& c) {
     int idx = 0;
     int sum = 0;
     for(int i = 0; i < 11; i++) {
@@ -262,7 +262,7 @@ static void subset_unrank_12_4(int r, std::array<uint8_t,4>& pos) {
  * @param c The cube state.
  * @return The slice index (0 to 494).
  */
-static int slice_index(const Cube& c) {
+int slice_index(const Cube& c) {
     std::array<uint8_t,4> pos{};
     int k = 0;
     for(int i = 0; i < 12; i++)
@@ -398,7 +398,7 @@ static void perm_unrank_8(int r, std::array<uint8_t,8>& p) {
  * @param c The cube state.
  * @return The corner permutation index (0 to 40319).
  */
-static int cperm_index(const Cube& c) {
+int cperm_index(const Cube& c) {
     return perm_rank_8(c.cp);
 }
 
@@ -453,7 +453,7 @@ static std::array<std::array<uint16_t, MOVE_N>, FACT8> build_cperm_moves() {
  * @param c The cube state.
  * @return The edge permutation index for the UD-slice edges (0 to 40319).
  */
-static int epermUD_index(const Cube& c) {
+int epermUD_index(const Cube& c) {
     std::array<uint8_t,8> p{};
     for(int i = 0; i < 8; i++){ // positions for UD-layer are 0..7
         const uint8_t eid = c.ep[i];
@@ -549,7 +549,7 @@ static void perm_unrank_4(int r, std::array<uint8_t,4>& p) {
  * @param c The cube state.
  * @return The edge permutation index for the E-slice edges (0 to 23).
  */
-static int epermE_index(const Cube& c) {
+int epermE_index(const Cube& c) {
     std::array<uint8_t, 4> p{};
     for(int i = 0; i < 4; i++) {
         const uint8_t pos = 8 + i; // positions 8..11
@@ -591,16 +591,6 @@ static std::array<std::array<uint8_t, MOVE_N>, FACT4> build_epermE_moves() {
 // *                        Coords Tables Builder                             *
 // ****************************************************************************
 
-/**
- * @brief Builds all coordinate move tables.
- *
- * This function constructs the complete set of coordinate move tables for
- * both phase 1 and phase 2 of the Rubik's Cube solving algorithm. It calls
- * individual functions to build each specific table and aggregates them
- * into a single CoordTables struct.
- *
- * @return A CoordTables struct containing all precomputed move tables.
- */
 CoordTables build_coords_tables() {
     CoordTables tables{};
     tables.twistMove = build_twist_moves();
