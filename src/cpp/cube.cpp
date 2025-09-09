@@ -157,7 +157,8 @@ void apply_move(Cube &c, Move m) {
     }
 }
 
-std::vector<Move> parse_moves(const std::string& moves) {
+///< @brief Parses a string of moves into a vector of Move enums.
+static std::vector<Move> parse_moves(const std::string& moves) {
     std::vector<Move> result;
     size_t i = 0;
     while (i < moves.size()) {

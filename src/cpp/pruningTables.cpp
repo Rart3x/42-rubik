@@ -24,8 +24,6 @@
  * @param T The coordinate tables used to determine the resulting states after moves.
  */
 static void build_P1_slice_twist(PrunP1 &P1, const CoordTables &T) {
-    std::cerr << "BFS P1: slice_twist...";
-
     auto &dst = P1.slice_twist;
 
     const Cube S = get_solved_cube();
@@ -56,7 +54,6 @@ static void build_P1_slice_twist(PrunP1 &P1, const CoordTables &T) {
             }
         }
     }
-    std::cerr << " done. radius = " << static_cast<int>(maxDepth) << "\n";
 }
 
 /**
@@ -71,8 +68,6 @@ static void build_P1_slice_twist(PrunP1 &P1, const CoordTables &T) {
  * @param T The coordinate tables used to determine the resulting states after moves.
  */
 static void build_P1_slice_flip(PrunP1 &P1, const CoordTables &T) {
-    std::cerr << "BFS P1: slice_flip...";
-
     auto &dst = P1.slice_flip;
 
     const Cube S = get_solved_cube();
@@ -102,7 +97,6 @@ static void build_P1_slice_flip(PrunP1 &P1, const CoordTables &T) {
             }
         }
     }
-    std::cerr << " done. radius = " << static_cast<int>(maxDepth) << "\n";
 }
 
 /**
@@ -117,8 +111,6 @@ static void build_P1_slice_flip(PrunP1 &P1, const CoordTables &T) {
  * @param T The coordinate tables used to determine the resulting states after moves.
  */
 static void build_P2_eE_c(PrunP2 &P2, const CoordTables &T) {
-    std::cerr << "BFS P2: eE_c...";
-
     auto &dst = P2.eE_c;
 
     auto isP2Legal = [](const int m){
@@ -155,7 +147,6 @@ static void build_P2_eE_c(PrunP2 &P2, const CoordTables &T) {
             }
         }
     }
-    std::cerr << " done. radius = " << static_cast<int>(maxDepth) << "\n";
 }
 
 /**
@@ -170,8 +161,6 @@ static void build_P2_eE_c(PrunP2 &P2, const CoordTables &T) {
  * @param T The coordinate tables used to determine the resulting states after moves.
  */
 void build_P2_eE_eU(PrunP2 &P2, const CoordTables &T){
-    std::cerr << "BFS P2: eE_eU...";
-
     auto &dst = P2.eE_eU;
 
     auto isP2Legal = [](const int m){
@@ -208,7 +197,6 @@ void build_P2_eE_eU(PrunP2 &P2, const CoordTables &T){
             }
         }
     }
-    std::cerr << "  done. radius = " << static_cast<int>(maxDepth) << "\n";
 }
 
 
