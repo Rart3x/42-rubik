@@ -62,11 +62,29 @@ struct PrunP2 {
     PrunP2(): eE_c(FACT4 * FACT8), eE_eU(FACT4 * FACT8){}   ///< @brief Constructor initializing the pruning tables for P2.
 };
 
+/**
+ * @brief Builds all phase 1 pruning tables.
+ *
+ * This function constructs the complete set of phase 1 pruning tables for
+ * the Rubik's Cube solving algorithm. It calls individual functions to build
+ * each specific table and aggregates them into a single PrunP1 struct.
+ *
+ * @param T The coordinate tables used to determine the resulting states after moves.
+ * @return A PrunP1 struct containing all precomputed pruning tables for phase 1.
+ */
+PrunP1 build_P1(const CoordTables &T);
 
-void    build_P1_slice_twist(PrunP1 &P1, const CoordTables &T); ///< @brief Builds the (slice, twist) pruning table for phase 1.
-void    build_P1_slice_flip(PrunP1 &P1, const CoordTables &T);  ///< @brief Builds the (slice, flip) pruning table for phase 1.
-void    build_P2_eE_c(PrunP2 &P2, const CoordTables &T);        ///< @brief Builds the (eE, c) pruning table for phase 2.
-void    build_P2_eE_eU(PrunP2 &P2, const CoordTables &T);       ///< @brief Builds the (eE, eU) pruning table for phase 2.
+/**
+ * @brief Builds all phase 2 pruning tables.
+ *
+ * This function constructs the complete set of phase 2 pruning tables for
+ * the Rubik's Cube solving algorithm. It calls individual functions to build
+ * each specific table and aggregates them into a single PrunP2 struct.
+ *
+ * @param T The coordinate tables used to determine the resulting states after moves.
+ * @return A PrunP2 struct containing all precomputed pruning tables for phase 2.
+ */
+PrunP2 build_P2(const CoordTables &T);
 
 
 #endif

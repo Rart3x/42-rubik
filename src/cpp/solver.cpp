@@ -208,7 +208,7 @@ std::vector<Move> solve(const Cube &scrambled, const CoordTables& coord_tables, 
     std::vector<std::vector<Move>> p1_paths;
     ida_p1(scrambled, 12, cur, p1_states, p1_paths, coord_tables, P1, tm); // typical P1 <= 8–12
     std::vector<Move> bestAns;
-    int bestLen = INT32_MAX;
+    size_t bestLen = SIZE_MAX;
     for(size_t i = 0; i < p1_states.size(); i++){
         if (tm.time_up())
             break;

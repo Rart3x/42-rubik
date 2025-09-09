@@ -5,12 +5,12 @@
  *  This file serves as the entry point for the rubik program.
  */
 
-#include "rubik.hpp"
+
 #include "cube.hpp"
+#include "solver.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
-
 
 /**
  *  @brief Validates the input string for rubik moves.
@@ -68,6 +68,10 @@ int main(int argc, char** argv) {
         }
     }
 
+	const CoordTables coord_tables = build_coords_tables();
+	const PrunP1 P1 = build_P1(coord_tables);
+	const PrunP2 P2 = build_P2(coord_tables);
+
     while (true) {
 		if (entry.empty()) {
             if (!std::getline(std::cin, entry))
@@ -81,15 +85,15 @@ int main(int argc, char** argv) {
 			entry.clear();
 			continue;
         }
-        // auto moves = Solve(entry);
-		std::vector moves = {"U", "R", "U'", "L'", "D", "F", "B'"}; // Placeholder for actual moves
+    	Cube entryCube = get_mixed_cube(entry);
+        std::vector<Move> moves = solve(entryCube, coord_tables, P1, P2);
         if (moves.empty()) {
 			std::cout << "SOLVED\n";
         } else {
-            for (size_t i=0; i < moves.size(); ++i) {
+            for (size_t i = 0; i < moves.size(); i++) {
 				if(i)
-					std::cout<<' ';
-				std::cout<<moves[i];
+					std::cout << ' ';
+				std::cout << MOVE_STR[moves[i]];
 			}
             std::cout << "\n";
         }

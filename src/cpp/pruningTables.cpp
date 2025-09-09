@@ -12,8 +12,18 @@
 #include <cstdint>
 #include <iostream>
 
-
-void build_P1_slice_twist(PrunP1 &P1, const CoordTables &T) {
+/**
+ * @brief Builds the slice-twist pruning table for phase 1.
+ *
+ * This function performs a breadth-first search (BFS) to populate the slice-twist
+ * pruning table used in phase 1 of the Rubik's Cube solving algorithm. It starts
+ * from the solved state and explores all possible states by applying each move,
+ * recording the minimum depth required to reach each state.
+ *
+ * @param P1 The phase 1 pruning tables to be populated.
+ * @param T The coordinate tables used to determine the resulting states after moves.
+ */
+static void build_P1_slice_twist(PrunP1 &P1, const CoordTables &T) {
     std::cerr << "BFS P1: slice_twist...";
 
     auto &dst = P1.slice_twist;
@@ -46,10 +56,21 @@ void build_P1_slice_twist(PrunP1 &P1, const CoordTables &T) {
             }
         }
     }
-    std::cerr << " done. radius=" << maxDepth << "\n";
+    std::cerr << " done. radius = " << static_cast<int>(maxDepth) << "\n";
 }
 
-void build_P1_slice_flip(PrunP1 &P1, const CoordTables &T) {
+/**
+ * @brief Builds the slice-flip pruning table for phase 1.
+ *
+ * This function performs a breadth-first search (BFS) to populate the slice-flip
+ * pruning table used in phase 1 of the Rubik's Cube solving algorithm. It starts
+ * from the solved state and explores all possible states by applying each move,
+ * recording the minimum depth required to reach each state.
+ *
+ * @param P1 The phase 1 pruning tables to be populated.
+ * @param T The coordinate tables used to determine the resulting states after moves.
+ */
+static void build_P1_slice_flip(PrunP1 &P1, const CoordTables &T) {
     std::cerr << "BFS P1: slice_flip...";
 
     auto &dst = P1.slice_flip;
@@ -81,10 +102,21 @@ void build_P1_slice_flip(PrunP1 &P1, const CoordTables &T) {
             }
         }
     }
-    std::cerr << " done. radius=" << maxDepth << "\n";
+    std::cerr << " done. radius = " << static_cast<int>(maxDepth) << "\n";
 }
 
-void build_P2_eE_c(PrunP2 &P2, const CoordTables &T) {
+/**
+ * @brief Builds the eE_c pruning table for phase 2.
+ *
+ * This function performs a breadth-first search (BFS) to populate the eE_c
+ * pruning table used in phase 2 of the Rubik's Cube solving algorithm. It starts
+ * from the solved state and explores all possible states by applying each move,
+ * recording the minimum depth required to reach each state.
+ *
+ * @param P2 The phase 2 pruning tables to be populated.
+ * @param T The coordinate tables used to determine the resulting states after moves.
+ */
+static void build_P2_eE_c(PrunP2 &P2, const CoordTables &T) {
     std::cerr << "BFS P2: eE_c...";
 
     auto &dst = P2.eE_c;
@@ -123,9 +155,20 @@ void build_P2_eE_c(PrunP2 &P2, const CoordTables &T) {
             }
         }
     }
-    std::cerr << " done. radius=" << maxDepth << "\n";
+    std::cerr << " done. radius = " << static_cast<int>(maxDepth) << "\n";
 }
 
+/**
+ * @brief Builds the eE_eU pruning table for phase 2.
+ *
+ * This function performs a breadth-first search (BFS) to populate the eE_eU
+ * pruning table used in phase 2 of the Rubik's Cube solving algorithm. It starts
+ * from the solved state and explores all possible states by applying each move,
+ * recording the minimum depth required to reach each state.
+ *
+ * @param P2 The phase 2 pruning tables to be populated.
+ * @param T The coordinate tables used to determine the resulting states after moves.
+ */
 void build_P2_eE_eU(PrunP2 &P2, const CoordTables &T){
     std::cerr << "BFS P2: eE_eU...";
 
@@ -165,5 +208,20 @@ void build_P2_eE_eU(PrunP2 &P2, const CoordTables &T){
             }
         }
     }
-    std::cerr << "  done. radius=" << maxDepth << "\n";
+    std::cerr << "  done. radius = " << static_cast<int>(maxDepth) << "\n";
+}
+
+
+PrunP1 build_P1(const CoordTables &T) {
+    PrunP1 P1;
+    build_P1_slice_twist(P1, T);
+    build_P1_slice_flip(P1, T);
+    return P1;
+}
+
+PrunP2 build_P2(const CoordTables &T) {
+    PrunP2 P2;
+    build_P2_eE_c(P2, T);
+    build_P2_eE_eU(P2, T);
+    return P2;
 }
