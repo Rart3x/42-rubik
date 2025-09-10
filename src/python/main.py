@@ -12,7 +12,7 @@ from ursina import Ursina
 from display import *
 
 
-def ensure_solver_built(exe="../cpp/rubik", make_dir="../cpp", target=None, timeout=300, quiet=False):
+def ensure_solver_built(exe, make_dir, target=None, timeout=300, quiet=False):
     """
     Ensure that the C++ solver executable is built using `make`.
     If the executable does not exist or is out of date, this function will
@@ -66,12 +66,12 @@ def main() -> int:
 
     # Ensure C++ solver is built
     file_path = Path(__file__).resolve().parent
-    cpp_path = file_path / "../cpp"
-    exe_path = cpp_path / "rubik"
-    cpp_str = str(cpp_path.resolve())
+    root_path = file_path / "../.."
+    exe_path = root_path / "rubik"
+    root_str = str(root_path.resolve())
     exe_str = str(exe_path.resolve())
 
-    ensure_solver_built(exe=exe_str, make_dir=cpp_str)
+    ensure_solver_built(exe=exe_str, make_dir=root_str)
 
 
     if os.path.exists("./models_compressed/"):

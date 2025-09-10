@@ -1,17 +1,17 @@
 NAME			:=	rubik
 
-SRC				:=	rubik.cpp \
-					cube.cpp \
-					coordsTables.cpp \
-					pruningTables.cpp \
-					solver.cpp \
+SRC				:=	src/cpp/rubik.cpp \
+					src/cpp/cube.cpp \
+					src/cpp/coordsTables.cpp \
+					src/cpp/pruningTables.cpp \
+					src/cpp/solver.cpp \
 
 SRC_OBJS		:=	$(SRC:%.cpp=.build/%.o)
 DEPS			:=	$(SRC_OBJS:%.o=%.d)
 
 CXX				:=	c++
 CXXFLAGS		:=	-Wall -Wextra -Werror -std=c++17 -g -O3
-CPPFLAGS		:=	-MP -MMD -Iinclude
+CPPFLAGS		:=	-MP -MMD -Isrc/cpp/include
 LDFLAGS			:=
 
 MAKEFLAGS		+= --silent --no-print-directory
