@@ -96,9 +96,9 @@ def generate_input(i):
     """Generate I input to apply to the Rubik's Cube"""
 
     inputs_chars = [
-        "f", "r", "u", "b", "l", "d", "e", "m", "s",
-        "f2", "r2", "u2", "b2", "l2", "d2", "e2", "m2", "s2",
-        "f'", "r'", "u'", "b'", "l'", "d'", "e'", "m'", "s'"
+        "f", "r", "u", "b", "l", "d",
+        "f2", "r2", "u2", "b2", "l2", "d2",
+        "f'", "r'", "u'", "b'", "l'", "d'"
     ]
 
     random_chars = []
