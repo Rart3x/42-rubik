@@ -27,10 +27,10 @@
  *  E-slice edges are 8..11: FR, FL, BL, BR
  */
 struct Cube {
-    std::array<uint8_t,8> cp{};     ///< Corner permutation array.
-    std::array<uint8_t,8> co{};     ///< Corner orientation array (0..2).
-    std::array<uint8_t,12> ep{};    ///< Edge permutation array.
-    std::array<uint8_t,12> eo{};    ///< Edge orientation array (0..1).
+    std::array<uint8_t, 8> cp{};     ///< Corner permutation array.
+    std::array<uint8_t, 8> co{};     ///< Corner orientation array (0..2).
+    std::array<uint8_t, 12> ep{};    ///< Edge permutation array.
+    std::array<uint8_t, 12> eo{};    ///< Edge orientation array (0..1).
 };
 
 
