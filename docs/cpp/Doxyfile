@@ -1,5 +1,5 @@
 # ---------- Project ----------
-PROJECT_NAME           = "YourProject (C++ API)"
+PROJECT_NAME           = "Rubik (C++ API)"
 PROJECT_NUMBER         = 0.1.0
 
 # We override OUTPUT_DIRECTORY to "site/cpp".
