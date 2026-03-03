@@ -63,7 +63,6 @@ def ensure_solver_built(exe, make_dir, target=None, timeout=300, quiet=False):
 
 def main() -> int:
     """Main function"""
-
     # Ensure C++ solver is built
     file_path = Path(__file__).resolve().parent
     root_path = file_path / "../.."
@@ -73,27 +72,16 @@ def main() -> int:
 
     ensure_solver_built(exe=exe_str, make_dir=root_str)
 
-
     if os.path.exists("./models_compressed/"):
         rmtree("./models_compressed", ignore_errors=True)
 
     rubik = Rubik()
 
     try:
-        moves = "U R B L D2 F U' R' B' L' D' F'"  # Placeholder for testing without GUI
         solver = Solver(exe_str)
-        solution = solver.solve(moves)
-        for m in solution:
-            print(m, end=" | ")
-        moves2 = "wefewfw"  # Placeholder for testing without GUI (ERROR testing)
-        # solution2 = solver.solve(moves2)
-        # for m in solution2:
-        #     print(m, end=" | ")
-        # solver.close()
-
         rubik.set_args(check_args_validity(len(sys.argv), sys.argv))
         app = Ursina(development_mode=False, title="Rubik")
-        build_scene(rubik)
+        build_scene(rubik, solver)
         app.run()
 
     except Exception as e:
@@ -102,7 +90,5 @@ def main() -> int:
 
     return 0
 
-
 if __name__ == "__main__":
     main()
-

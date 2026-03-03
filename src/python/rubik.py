@@ -1,6 +1,5 @@
 class Rubik:
     """Rubik class"""
-
     def __init__(self):
         self.args = []
         self.mixed_cube = []

@@ -3,29 +3,31 @@ import tkinter
 
 from ursina import Entity, Button, InputField, EditorCamera, color, scene, window, held_keys, invoke
 
-from rubik import Rubik
-from utils import decompose_arr_args, expand_double_inputs, generate_input, insert_and_shift, insert_and_shift_arr, reverse_seq
+from Solver import Solver
 
+from rubik import Rubik
+from utils import decompose_arr_args, expand_double_inputs, generate_input, insert_and_shift, insert_and_shift_arr, \
+    reverse_seq
 
 center = None
 nbr_field = None
 args_g = None
 
-duration = 0.3
+duration = 0.1
 in_animation = False
 
 idx, r_seq_len_a, r_seq_len_b = 0, 0, 0
 cubes, r_seq, seq = [], [], []
 
+rot_dict = {'f': ['z', -1, 90], 'r': ['x', 1, 90], 'u': ['y', 1, 90],
+            'b': ['z', 1, -90], 'l': ['x', -1, -90], 'd': ['y', -1, -90],
 
-rot_dict = { 'f': ['z', -1, 90],  'r': ['x', 1, 90],     'u': ['y', 1, 90],
-             'b': ['z', 1, -90],  'l': ['x', -1, -90],   'd': ['y', -1, -90],
+            'f\'': ['z', -1, -90], 'r\'': ['x', 1, -90], 'u\'': ['y', 1, -90],
+            'b\'': ['z', 1, 90], 'l\'': ['x', -1, 90], 'd\'': ['y', -1, 90],
+            }
 
-            'f\'': ['z', -1, -90],'r\'': ['x', 1, -90],  'u\'': ['y', 1, -90],
-            'b\'': ['z', 1, 90],  'l\'': ['x', -1, 90],  'd\'': ['y', -1, 90],
-}
 
-def build_scene(rubik: Rubik):
+def build_scene(rubik: Rubik, solver: Solver):
     """
     Must be called AFTER the Ursina() app has been created in main.
     Builds UI, the cube entities, and sets up input handlers.
@@ -35,8 +37,9 @@ def build_scene(rubik: Rubik):
     # prime rubik with initial randomized state
     inputs = generate_input(10)
     rubik.set_mixed_cube(inputs)
-    global args_g
+    global args_g, solver_obj
     args_g = rubik.get_args()
+    solver_obj = solver
 
     # build the 3x3x3 cubelets
     for position in product((-1, 0, 1), repeat=3):
@@ -49,19 +52,28 @@ def build_scene(rubik: Rubik):
             )
         )
 
+
 def _setup_ui():
     global center, nbr_field
 
     center = Entity()
     nbr_field = InputField(y=-.35, limit_content_to='0123456789', active=True)
 
+    # Bouton Mixing
     Button(
         text='Mixing', scale=.1, color=color.cyan.tint(-.4),
         x=0.30, y=-.35, on_click=submit
     ).fit_to_text()
 
+    # Bouton Solve
+    Button(
+        text='Solve', scale=.1, color=color.azure,
+        x=0.45, y=-.35, on_click=solve
+    ).fit_to_text()
+
     # Use Tk to query screen size; hide/destroy the Tk window to avoid a ghost window
-    root = tkinter.Tk(); root.withdraw()
+    root = tkinter.Tk()
+    root.withdraw()
     w, h = root.winfo_screenwidth(), root.winfo_screenheight()
     root.destroy()
 
@@ -69,6 +81,29 @@ def _setup_ui():
     window.position = (w / 4, h / 4)
 
     EditorCamera()
+
+def solve():
+    """Envoie la séquence actuelle au solver et joue la solution"""
+    global seq, solver_obj
+
+    print("Solving with sequence:", seq)
+
+    if not seq or solver_obj is None:
+        return
+
+    # convertir la séquence en majuscules pour le solver
+    moves_str = " ".join(m.upper() for m in seq)
+
+    try:
+        # récupérer la solution du solver
+        solution = solver_obj.solve(moves_str)
+        seq = []
+    except Exception as e:
+        print("Erreur solver :", e)
+        return
+
+    # jouer la solution
+    automatic_input(solution)
 
 
 def apply_movement(axis, layer):
@@ -108,7 +143,7 @@ def animation_sequence(key):
 
     # Get the axis, layer and angle of the movement from the dictionary
     axis, layer, angle = rot_dict[key]
-    
+
     apply_movement(axis, layer)
     animate_rotation(center, axis, angle, duration)
     invoke(end_animation, delay=duration + duration / 2)
@@ -123,7 +158,7 @@ def automatic_input(args):
     modified_args = expand_double_inputs(args)
 
     def process_input(index):
-        
+
         global in_animation
 
         if index >= len(modified_args):
@@ -132,29 +167,29 @@ def automatic_input(args):
         i = modified_args[index]
 
         if len(i) > 1 and not i[1].isdigit() and not in_animation:
-            
+
             in_animation = True
             axis, layer, angle = rot_dict[i[0].lower() + i[1]]
-            
+
             apply_movement(axis, layer)
             animate_rotation(center, axis, angle, duration)
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
-        
+
         elif not in_animation:
-            
+
             in_animation = True
             axis, layer, angle = rot_dict[i[0].lower()]
-            
+
             apply_movement(axis, layer)
             animate_rotation(center, axis, angle, duration)
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
 
     def process_next_input(prev_index):
-        
+
         global in_animation
-        
+
         in_animation = False
-        
+
         process_input(prev_index + 1)
 
     process_input(0)
@@ -183,18 +218,18 @@ def input(key):
             idx += 1
             animation_sequence(seq[idx])
 
-   # Generate 25 random inputs
+    # Generate 25 random inputs
     if held_keys['space']:
         inputs = generate_input(25)
         inputs = expand_double_inputs(inputs)
-        
+
         if idx < len(seq) - 1:
             seq = insert_and_shift_arr(seq, idx, inputs)
-        
+
         decompose_arr_args(inputs, seq)
         reverse_seq_update()
         automatic_input(inputs)
-        
+
         idx = len(seq) - 1
 
     # Use user inputs
@@ -202,11 +237,11 @@ def input(key):
         if args_g is not None:
             if idx < len(seq) - 1:
                 seq = insert_and_shift_arr(seq, idx, args_g)
-            
+
             decompose_arr_args(args_g, seq)
             reverse_seq_update()
             automatic_input(args_g)
-            
+
             idx = len(seq) - 1
 
     if key not in rot_dict:
@@ -233,7 +268,6 @@ def input(key):
 
 def animate_rotation(center, axis, angle, duration):
     """Animate rotation function"""
-
     if axis == 'x':
         center.animate('rotation_x', angle, duration=duration)
     elif axis == 'y':
@@ -244,14 +278,12 @@ def animate_rotation(center, axis, angle, duration):
 
 def end_animation():
     """End animation function"""
-
     global in_animation
     in_animation = False
 
 
 def reverse_seq_update():
     """Reverse sequence update function"""
-
     global r_seq, r_seq_len_a, r_seq_len_b, idx
 
     r_seq_len_b = len(r_seq) - 1
@@ -261,28 +293,27 @@ def reverse_seq_update():
 
 def submit():
     """Submit method for mixing generator in frontend"""
-
     global idx, seq
 
     input_text = nbr_field.text
-    
+
     if not input_text.isdigit():
         return
-    
+
     input_integer = int(input_text)
     nbr_field.text = ""
 
     if input_integer > 1000:
         return
-    
+
     inputs = generate_input(input_integer)
     inputs = expand_double_inputs(inputs)
-    
+
     if idx < len(seq) - 1:
         seq = insert_and_shift_arr(seq, idx, args_g)
-    
+
     decompose_arr_args(inputs, seq)
     reverse_seq_update()
     automatic_input(inputs)
-    
+
     idx = len(seq) - 1
