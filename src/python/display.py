@@ -1,10 +1,10 @@
 from itertools import product
 import tkinter
+import time
 
-from ursina import Entity, Button, InputField, EditorCamera, color, scene, window, held_keys, invoke
+from ursina import Entity, Button, InputField, EditorCamera, color, scene, window, held_keys, invoke, Text
 
 from Solver import Solver
-
 from rubik import Rubik
 from utils import decompose_arr_args, expand_double_inputs, generate_input, insert_and_shift, insert_and_shift_arr, \
     reverse_seq
@@ -13,11 +13,16 @@ center = None
 nbr_field = None
 args_g = None
 
+solver_timer_text = None
+solver_moves_text = None
+
 duration = 0.1
 in_animation = False
 
 idx, r_seq_len_a, r_seq_len_b = 0, 0, 0
 cubes, r_seq, seq = [], [], []
+
+solver_obj = None
 
 rot_dict = {'f': ['z', -1, 90], 'r': ['x', 1, 90], 'u': ['y', 1, 90],
             'b': ['z', 1, -90], 'l': ['x', -1, -90], 'd': ['y', -1, -90],
@@ -29,8 +34,10 @@ rot_dict = {'f': ['z', -1, 90], 'r': ['x', 1, 90], 'u': ['y', 1, 90],
 
 def build_scene(rubik: Rubik, solver: Solver):
     """
-    Must be called AFTER the Ursina() app has been created in main.
-    Builds UI, the cube entities, and sets up input handlers.
+    Build the 3D cube scene and initialize UI elements.
+
+    :param rubik: Rubik cube object
+    :param solver: Solver object
     """
     _setup_ui()
 
@@ -54,7 +61,11 @@ def build_scene(rubik: Rubik, solver: Solver):
 
 
 def _setup_ui():
+    """
+    Setup the user interface: input fields, buttons, and solver stats.
+    """
     global center, nbr_field
+    global solver_timer_text, solver_moves_text
 
     center = Entity()
     nbr_field = InputField(y=-.35, limit_content_to='0123456789', active=True)
@@ -71,6 +82,22 @@ def _setup_ui():
         x=0.45, y=-.35, on_click=solve
     ).fit_to_text()
 
+    solver_timer_text = Text(
+        text="Solver time: 0.000000s",
+        position=(-0.75, 0.45),
+        origin=(0, 0),
+        scale=1.2,
+        color=color.yellow
+    )
+
+    solver_moves_text = Text(
+        text="Solver moves: 0",
+        position=(-0.80, 0.40),
+        origin=(0, 0),
+        scale=1.2,
+        color=color.yellow
+    )
+
     # Use Tk to query screen size; hide/destroy the Tk window to avoid a ghost window
     root = tkinter.Tk()
     root.withdraw()
@@ -84,23 +111,33 @@ def _setup_ui():
 
 
 def solve():
-    """Send the current state (based on idx) to the solver and append solution properly"""
+    """
+    Solve the current cube sequence, measure solver execution time,
+    and update UI with the number of moves and elapsed time.
+    """
     global seq, solver_obj, idx
+    global solver_timer_text, solver_moves_text
+    global in_animation
+
+    if in_animation:
+        return
 
     if solver_obj is None:
         return
 
-    # 🔹 Keep only moves up to current position
+    # Only keep moves up to the current index
     seq = seq[:idx + 1]
 
     if not seq:
         return
 
-    # Convert current sequence to uppercase
     moves_str = " ".join(m.upper() for m in seq)
 
     try:
+        start_time = time.perf_counter()
         solution = solver_obj.solve(moves_str)
+        end_time = time.perf_counter()
+        elapsed_time = end_time - start_time
     except Exception as e:
         print("Solver error:", e)
         return
@@ -108,37 +145,35 @@ def solve():
     if not solution:
         return
 
-    # Expand double moves
-    solution = expand_double_inputs(solution)
+    if isinstance(solution, str):
+        solution = solution.split()
 
-    # Convert to lowercase for rendering system
+    solution = expand_double_inputs(solution)
     solution = [move.lower() for move in solution]
 
-    # Append solution
-    seq.extend(solution)
+    # Update UI
+    solver_timer_text.text = f"Solver time: {elapsed_time:.6f}s"
+    solver_moves_text.text = f"Solver moves: {len(solution)}"
 
-    # Update reverse history
+    # Append solution properly
+    if idx < len(seq) - 1:
+        seq = insert_and_shift_arr(seq, idx, solution)
+    else:
+        seq.extend(solution)
+
     reverse_seq_update()
-
-    # Move index to the end
     idx = len(seq) - 1
 
-    # Animate solution
     automatic_input(solution)
 
 
 def apply_movement(axis, layer):
     """
-    Apply movement function
-    Move the cubes to the center entity if they are in the layer to be rotated
-    and set their parent to the center entity
+    Apply a rotation movement on a specific layer of the cube.
 
-    @param axis: axis of rotation
-    @param layer: layer to be rotated
-
-    @return: None
+    :param axis: Axis of rotation ('x', 'y', or 'z')
+    :param layer: Layer index to rotate
     """
-
     global cubes
 
     for cube in cubes:
@@ -156,13 +191,15 @@ def apply_movement(axis, layer):
 
 
 def animation_sequence(key):
-    """Animation sequence function"""
+    """
+    Animate a cube movement based on the given key.
 
+    :param key: Rotation key (e.g., 'f', 'r', 'u', etc.)
+    """
     global in_animation
 
     in_animation = True
 
-    # Get the axis, layer and angle of the movement from the dictionary
     axis, layer, angle = rot_dict[key]
 
     apply_movement(axis, layer)
@@ -171,15 +208,17 @@ def animation_sequence(key):
 
 
 def automatic_input(args):
-    '''Pre Input keys method'''
+    """
+    Automatically process a list of cube moves.
 
+    :param args: List of moves
+    """
     if args is None:
         return
 
     modified_args = expand_double_inputs(args)
 
     def process_input(index):
-
         global in_animation
 
         if index >= len(modified_args):
@@ -188,37 +227,33 @@ def automatic_input(args):
         i = modified_args[index]
 
         if len(i) > 1 and not i[1].isdigit() and not in_animation:
-
             in_animation = True
             axis, layer, angle = rot_dict[i[0].lower() + i[1]]
-
             apply_movement(axis, layer)
             animate_rotation(center, axis, angle, duration)
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
 
         elif not in_animation:
-
             in_animation = True
             axis, layer, angle = rot_dict[i[0].lower()]
-
             apply_movement(axis, layer)
             animate_rotation(center, axis, angle, duration)
             invoke(lambda: process_next_input(index), delay=duration + duration / 2)
 
     def process_next_input(prev_index):
-
         global in_animation
-
         in_animation = False
-
         process_input(prev_index + 1)
 
     process_input(0)
 
 
 def input(key):
-    '''Input keys method'''
+    """
+    Handle user keyboard input for cube navigation and rotations.
 
+    :param key: Pressed key
+    """
     global in_animation, idx, seq, r_seq, r_seq_len_a, r_seq_len_b
 
     if held_keys['escape']:
@@ -234,18 +269,14 @@ def input(key):
                 animation_sequence(r_seq[idx])
                 idx -= 1
 
-        print(idx)
-
     if held_keys["right arrow"] and len(seq) > 0:
         if idx < len(seq) - 1:
             idx += 1
             animation_sequence(seq[idx])
 
-        print(idx)
-
     # Generate 25 random inputs
     if held_keys['space']:
-        inputs = generate_input(3)
+        inputs = generate_input(25)
         inputs = expand_double_inputs(inputs)
 
         if idx < len(seq) - 1:
@@ -272,10 +303,6 @@ def input(key):
     if key not in rot_dict:
         return
 
-    # Check if the key is in the dictionary
-    if key not in rot_dict:
-        return
-
     # Register keyboard inputs
     if idx < len(seq) - 1:
         seq = insert_and_shift(seq, idx, key)
@@ -292,7 +319,14 @@ def input(key):
 
 
 def animate_rotation(center, axis, angle, duration):
-    """Animate rotation function"""
+    """
+    Animate rotation of a cube center entity along a specific axis.
+
+    :param center: Center entity to rotate
+    :param axis: Axis of rotation ('x', 'y', 'z')
+    :param angle: Rotation angle in degrees
+    :param duration: Duration of animation
+    """
     if axis == 'x':
         center.animate('rotation_x', angle, duration=duration)
     elif axis == 'y':
@@ -302,13 +336,13 @@ def animate_rotation(center, axis, angle, duration):
 
 
 def end_animation():
-    """End animation function"""
+    """Mark the end of a rotation animation"""
     global in_animation
     in_animation = False
 
 
 def reverse_seq_update():
-    """Reverse sequence update function"""
+    """Update the reverse sequence and its lengths"""
     global r_seq, r_seq_len_a, r_seq_len_b, idx
 
     r_seq_len_b = len(r_seq) - 1
@@ -317,7 +351,7 @@ def reverse_seq_update():
 
 
 def submit():
-    """Submit method for mixing generator in frontend"""
+    """Handle the user mixing input from the interface"""
     global idx, seq
 
     input_text = nbr_field.text
@@ -331,11 +365,10 @@ def submit():
     if input_integer > 1000:
         return
 
+    seq = seq[:idx + 1]
+
     inputs = generate_input(input_integer)
     inputs = expand_double_inputs(inputs)
-
-    if idx < len(seq) - 1:
-        seq = insert_and_shift_arr(seq, idx, args_g)
 
     decompose_arr_args(inputs, seq)
     reverse_seq_update()
