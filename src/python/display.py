@@ -82,27 +82,48 @@ def _setup_ui():
 
     EditorCamera()
 
+
 def solve():
-    """Envoie la séquence actuelle au solver et joue la solution"""
-    global seq, solver_obj
+    """Send the current state (based on idx) to the solver and append solution properly"""
+    global seq, solver_obj, idx
 
-    print("Solving with sequence:", seq)
-
-    if not seq or solver_obj is None:
+    if solver_obj is None:
         return
 
-    # convertir la séquence en majuscules pour le solver
+    # 🔹 Keep only moves up to current position
+    seq = seq[:idx + 1]
+
+    if not seq:
+        return
+
+    # Convert current sequence to uppercase
     moves_str = " ".join(m.upper() for m in seq)
 
     try:
-        # récupérer la solution du solver
         solution = solver_obj.solve(moves_str)
-        seq = []
     except Exception as e:
-        print("Erreur solver :", e)
+        print("Solver error:", e)
         return
 
-    # jouer la solution
+    if not solution:
+        return
+
+    # Expand double moves
+    solution = expand_double_inputs(solution)
+
+    # Convert to lowercase for rendering system
+    solution = [move.lower() for move in solution]
+
+    # Append solution
+    seq.extend(solution)
+
+    # Update reverse history
+    reverse_seq_update()
+
+    # Move index to the end
+    idx = len(seq) - 1
+
+    # Animate solution
     automatic_input(solution)
 
 
@@ -213,14 +234,18 @@ def input(key):
                 animation_sequence(r_seq[idx])
                 idx -= 1
 
+        print(idx)
+
     if held_keys["right arrow"] and len(seq) > 0:
         if idx < len(seq) - 1:
             idx += 1
             animation_sequence(seq[idx])
 
+        print(idx)
+
     # Generate 25 random inputs
     if held_keys['space']:
-        inputs = generate_input(25)
+        inputs = generate_input(3)
         inputs = expand_double_inputs(inputs)
 
         if idx < len(seq) - 1:
