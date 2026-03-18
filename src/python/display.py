@@ -2,12 +2,25 @@ from itertools import product
 import tkinter
 import time
 
-from ursina import Entity, Button, InputField, EditorCamera, color, scene, window, held_keys, invoke, Text
+from ursina import (Entity,
+                    Button,
+                    InputField,
+                    EditorCamera,
+                    color,
+                    scene,
+                    window,
+                    held_keys,
+                    invoke,
+                    Text)
 
 from Solver import Solver
 from rubik import Rubik
-from utils import decompose_arr_args, expand_double_inputs, generate_input, insert_and_shift, insert_and_shift_arr, \
-    reverse_seq
+from utils import (decompose_arr_args,
+                   expand_double_inputs,
+                   generate_input,
+                   insert_and_shift,
+                   insert_and_shift_arr,
+                   reverse_seq)
 
 center = None
 nbr_field = None
@@ -98,7 +111,6 @@ def _setup_ui():
         color=color.yellow
     )
 
-    # Use Tk to query screen size; hide/destroy the Tk window to avoid a ghost window
     root = tkinter.Tk()
     root.withdraw()
     w, h = root.winfo_screenwidth(), root.winfo_screenheight()
@@ -231,14 +243,16 @@ def automatic_input(args):
             axis, layer, angle = rot_dict[i[0].lower() + i[1]]
             apply_movement(axis, layer)
             animate_rotation(center, axis, angle, duration)
-            invoke(lambda: process_next_input(index), delay=duration + duration / 2)
+            invoke(lambda: process_next_input(index),
+                   delay=duration + duration / 2)
 
         elif not in_animation:
             in_animation = True
             axis, layer, angle = rot_dict[i[0].lower()]
             apply_movement(axis, layer)
             animate_rotation(center, axis, angle, duration)
-            invoke(lambda: process_next_input(index), delay=duration + duration / 2)
+            invoke(lambda: process_next_input(index),
+                   delay=duration + duration / 2)
 
     def process_next_input(prev_index):
         global in_animation
@@ -291,12 +305,14 @@ def input(key):
     # Use user inputs
     if held_keys['tab']:
         if args_g is not None:
-            if idx < len(seq) - 1:
-                seq = insert_and_shift_arr(seq, idx, args_g)
+            new_args_g = [arg.lower() for arg in args_g]
 
-            decompose_arr_args(args_g, seq)
+            if idx < len(seq) - 1:
+                seq = insert_and_shift_arr(seq, idx, new_args_g)
+
+            decompose_arr_args(new_args_g, seq)
             reverse_seq_update()
-            automatic_input(args_g)
+            automatic_input(new_args_g)
 
             idx = len(seq) - 1
 

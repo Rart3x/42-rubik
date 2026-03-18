@@ -1,12 +1,15 @@
+import queue
 import subprocess
 import threading
-import queue
+
 
 class Solver:
     def __init__(self, path: str):
         self.proc = subprocess.Popen(
             [path, "-c"],
-            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             bufsize=1, text=True  # line-buffered text I/O
         )
         self._q = queue.Queue()
@@ -34,7 +37,8 @@ class Solver:
 
     def close(self):
         try:
-            self.proc.stdin.write("QUIT\n"); self.proc.stdin.flush()
+            self.proc.stdin.write("QUIT\n")
+            self.proc.stdin.flush()
         except Exception:
             pass
         self.proc.terminate()

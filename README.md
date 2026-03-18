@@ -70,18 +70,40 @@ If no mix sequence is provided, the program will wait for a user input.
 
 To use the Python 3D visualizer, run:
 ```bash
-  python src/python/main.py
+  python src/python/main.py [mix_sequence]
 ```
 If the C++ program is not compiled yet, it will be compiled automatically.
 
-Then you can use the following commands in the visualizer:
-- `drag right mouse button`: Rotate the cube.
-- `scroll mouse wheel`: Zoom in/out.
-- `R, L, U, D, F, B`: Rotate the corresponding face clockwise
-- `Number in input box + click "mixing"`: Mix the cube with random moves for the specified number of times.
-- `Click "solving"`: Solve the cube.
-- `Click "reset"`: Reset the cube to its initial state.
-- `ESC`: Exit the visualizer.
+---
+## **Keyboard Inputs / Key Bindings**
+
+The Rubik’s cube project allows interaction via both the Python 3D visualizer and the C++ CLI. The following keys are recognized:
+
+### **Cube Face Rotations**
+
+* `R` – Rotate Right face clockwise
+* `R'` – Rotate Right face counter-clockwise
+* `R2` – Rotate Right face 180°
+* `L`, `L'`, `L2` – Left face
+* `U`, `U'`, `U2` – Up face
+* `D`, `D'`, `D2` – Down face
+* `F`, `F'`, `F2` – Front face
+* `B`, `B'`, `B2` – Back face
+
+### **Navigation / Animation**
+
+* `Left arrow` – Step backward through the reverse historic sequence
+* `Right arrow` – Step forward through the normal historic sequence
+* `Space` – Generate 25 random moves and animate them
+* `Tab` – Apply user-defined input sequence (`args_g`)
+
+### **Visualizer Controls**
+
+* `Drag right mouse button` – Rotate the cube view
+* `Scroll mouse wheel` – Zoom in/out
+* `ESC` – Exit visualizer
+* `Mixing button` – Mix the cube with N random moves
+* `Solving button` – Solve the cube automatically
 
 ---
 

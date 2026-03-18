@@ -1,15 +1,11 @@
-import os
 import sys
 import subprocess
-from pathlib import Path
+
+from display import *
 from shutil import which, rmtree
 
-from rubik import Rubik
 from utils import *
-from Solver import Solver
-
 from ursina import Ursina
-from display import *
 
 
 def ensure_solver_built(exe, make_dir, target=None, timeout=300, quiet=False):
